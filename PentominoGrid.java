@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+
 public class PentominoGrid extends JPanel {
+    /* Declaring Variables */
     private int ROWS;
     private int COLS;
     private Board board;
