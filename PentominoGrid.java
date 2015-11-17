@@ -1,8 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 
-public class PentominoGrid extends JPanel {
+public class PentominoGrid extends JPanel
+                           implements KeyListener, Cloneable {
     private int ROWS;
     private int COLS;
     private Board board;
@@ -22,10 +25,11 @@ public class PentominoGrid extends JPanel {
         board = inBoard;
         ROWS = board.getHeight();
         COLS = board.getWidth();
+        addKeyListener(this);
     }
     SquareRx[][] squares;
 
-public void paintSquares() {
+    public void paintSquares() {
     if(squares == null)
         initSquares();
     for (int i = 0; i < COLS; i++) {
@@ -88,6 +92,80 @@ public void paintSquares() {
                 squares[i][j] = new SquareRx(i, j, r);
             }
         }
+    }
+
+    /** Handle the key typed event from the text field. */
+    public void keyTyped(KeyEvent e) {
+
+        repaint();
+    }
+
+    /** Handle the key pressed event from the text field. */
+    public void keyPressed(KeyEvent e) {
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_LEFT) {
+            board.currentPosition = board.moveLeft(board.currentPosition, board.activePentomino);
+        }
+
+        if (key == KeyEvent.VK_RIGHT) {
+            board.currentPosition = board.moveRight(board.currentPosition, board.activePentomino);
+        }
+
+        if (key == KeyEvent.VK_UP) {
+            Pentomino rotatedPentomino = board.activePentomino.Rotate();
+            board.removePentomino(board.currentPosition, board.activePentomino);
+            if (!board.checkCollision(board.currentPosition, rotatedPentomino)) {
+                board.printBoard();
+                board.fillPentomino(board.currentPosition, rotatedPentomino, 1);
+                board.activePentomino = rotatedPentomino;
+            }
+            else
+                board.fillPentomino(board.currentPosition, board.activePentomino, 1);
+
+        }
+
+        if (key == KeyEvent.VK_DOWN) {
+            board.currentPosition = board.moveDown(board.currentPosition, board.activePentomino);
+        }
+
+        if (key == KeyEvent.VK_SPACE) {
+                Coordinate currentPosition = board.currentPosition.clone();
+                Coordinate previousPosition = new Coordinate(currentPosition.x, currentPosition.y - 1);
+
+                while (previousPosition.y != currentPosition.y) {
+                    previousPosition = currentPosition.clone();
+                    currentPosition = board.moveDown(board.currentPosition, board.activePentomino);
+                }
+
+                Coordinate firstPosition = new Coordinate((board.getWidth() / 2), 0);
+                board.currentPosition = firstPosition;
+                Pentomino pentomino;
+                pentomino = board.generatePentomino(board.pentominos);
+                board.activePentomino = pentomino;
+
+                if (!board.checkCollision(firstPosition, pentomino)) {
+                    board.printBoard();
+                    board.fillPentomino(firstPosition, pentomino, 1);
+                }
+
+        }
+
+        if (key == KeyEvent.VK_ENTER) {
+        }
+
+
+        repaint();
+    }
+
+    /** Handle the key released event from the text field. */
+    public void keyReleased(KeyEvent e) {
+        repaint();
+    }
+
+    /** Handle the button click. */
+    public void actionPerformed(ActionEvent e) {
+
     }
 }
 class SquareRx {

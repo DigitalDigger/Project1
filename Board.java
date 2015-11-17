@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Board  implements KeyListener {
+public class Board {
     public HashMap<Coordinate,CellValues>  board = new HashMap<Coordinate, CellValues>();
     private int width = 0;
     private int height = 0;
@@ -20,6 +20,7 @@ public class Board  implements KeyListener {
     private boolean isLeastCoordinateHeuristic = false;
     public Coordinate currentPosition;
     public Pentomino activePentomino;
+    public HashMap<Pentomino, ArrayList<Pentomino>> pentominos;
 
     /** Handle the key typed event from the text field. */
     public void keyTyped(KeyEvent e) {
@@ -28,23 +29,7 @@ public class Board  implements KeyListener {
 
     /** Handle the key pressed event from the text field. */
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
 
-        if (key == KeyEvent.VK_LEFT) {
-            currentPosition = moveLeft(currentPosition, activePentomino);
-        }
-
-        if (key == KeyEvent.VK_RIGHT) {
-            currentPosition = moveRight(currentPosition, activePentomino);
-        }
-
-        if (key == KeyEvent.VK_UP) {
-            currentPosition = moveUp(currentPosition, activePentomino);
-        }
-
-        if (key == KeyEvent.VK_DOWN) {
-            currentPosition = moveDown(currentPosition, activePentomino);
-        }
 
     }
 
@@ -480,8 +465,47 @@ public class Board  implements KeyListener {
 
 
 */
+        //f.PrintPento();
+        //f.PrintArrayList();
 
-        HashMap<Pentomino, ArrayList<Pentomino>> pentominos = new HashMap<Pentomino, ArrayList<Pentomino>>();
+        Scanner in = new Scanner(System.in);
+        int heightBoard=0;
+        int widthBoard=0;
+        int boardSize = heightBoard * widthBoard;
+
+        System.out.println("Please enter the height of the board: ");
+        heightBoard = in.nextInt();
+        System.out.println("Please enter the width of the board: ");
+        widthBoard = in.nextInt();
+        boardSize = heightBoard * widthBoard;
+
+
+        String answer1 = "";
+        String answer2 = "";
+        String answer3 = "";
+
+
+
+
+
+        System.out.println("Please enter yes/no for using heuristic for isolated cells: ");
+        answer1 = in.next();
+
+
+        //	System.out.println("Please enter yes/no for using heuristic for double isolated cells: ");
+        //	answer2 = in.next();
+
+        System.out.println("Please enter yes/no for using heuristic for the least coordinate: ");
+        answer3 = in.next();
+
+        boolean heuristicSingleCell = answer1.equals("yes");
+        boolean heurisricDoubleCell = answer2.equals("yes");
+        boolean heuristicLeastCoordinate = answer3.equals("yes");
+
+        Board board = new Board(widthBoard, heightBoard, heuristicSingleCell, heurisricDoubleCell, heuristicLeastCoordinate);
+
+
+        board.pentominos = new HashMap<Pentomino, ArrayList<Pentomino>>();
 
         ArrayList<Pentomino> basicShapes = new ArrayList<Pentomino>();
 
@@ -527,20 +551,20 @@ public class Board  implements KeyListener {
                 Rotatable.add(basicFlip3);
             }
 
-            pentominos.put(basic, Rotatable);
+            board.pentominos.put(basic, Rotatable);
         }
 
         Pentomino x = new Pentomino(9, 0 ,1, 1, 0, 1, 1, 1, 2, 2, 1, false, false);
         ArrayList<Pentomino> xRots = new ArrayList<Pentomino>();
         xRots.add(x);
-        pentominos.put(x, xRots);
+        board.pentominos.put(x, xRots);
 
         Pentomino i = new Pentomino(1, 0, 0, 1, 0, 2, 0, 3, 0, 4, 0,false, false);
         Pentomino iRot1 = i.Rotate();
         ArrayList<Pentomino> iRots = new ArrayList<Pentomino>();
         iRots.add(i);
         iRots.add(iRot1);
-        pentominos.put(i, iRots);
+        board.pentominos.put(i, iRots);
 
         Pentomino z = new Pentomino(11, 0, 0, 0, 1, 1, 1, 2, 1, 2, 2, false, false);
         Pentomino zRot1 = z.Rotate();
@@ -551,52 +575,16 @@ public class Board  implements KeyListener {
         zRots.add(zRot2);
         Pentomino zRot3 = zRot2.Rotate();
         zRots.add(zRot3);
-        pentominos.put(z, zRots);
-
-
-        //f.PrintPento();
-        //f.PrintArrayList();
-
-        Scanner in = new Scanner(System.in);
-        int heightBoard=0;
-        int widthBoard=0;
-        int boardSize = heightBoard * widthBoard;
-
-            System.out.println("Please enter the height of the board: ");
-            heightBoard = in.nextInt();
-            System.out.println("Please enter the width of the board: ");
-            widthBoard = in.nextInt();
-            boardSize = heightBoard * widthBoard;
-
-
-        String answer1 = "";
-        String answer2 = "";
-        String answer3 = "";
+        board.pentominos.put(z, zRots);
 
 
 
-
-
-        System.out.println("Please enter yes/no for using heuristic for isolated cells: ");
-        answer1 = in.next();
-
-
-        //	System.out.println("Please enter yes/no for using heuristic for double isolated cells: ");
-        //	answer2 = in.next();
-
-        System.out.println("Please enter yes/no for using heuristic for the least coordinate: ");
-        answer3 = in.next();
-
-        boolean heuristicSingleCell = answer1.equals("yes");
-        boolean heurisricDoubleCell = answer2.equals("yes");
-        boolean heuristicLeastCoordinate = answer3.equals("yes");
-
-        Board board = new Board(widthBoard, heightBoard, heuristicSingleCell, heurisricDoubleCell, heuristicLeastCoordinate);
 
 
 
         /* Pentomino Visualisation */
         PentominoGrid grid = new PentominoGrid(board);
+        grid.setFocusable(true);
         JFrame j = new JFrame();
         j.add(grid);
 
@@ -607,24 +595,21 @@ public class Board  implements KeyListener {
         Coordinate firstPosition = new Coordinate((widthBoard / 2), 0);
         board.currentPosition = firstPosition;
         Pentomino pentomino;
-        pentomino = board.generatePentomino(pentominos);
+        pentomino = board.generatePentomino(board.pentominos);
         board.activePentomino = pentomino;
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        pentomino = board.generatePentomino(pentominos);
-        board.activePentomino = pentomino;
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
-        board.moveDown(board.currentPosition, board.activePentomino);
+
+        if (!board.checkCollision(firstPosition, pentomino)) {
+            board.printBoard();
+            board.fillPentomino(firstPosition, pentomino, 1);
+            //break;
+        }
 
 
-        while (true) {
 
-            board.activePentomino = pentomino;
+        while (true)
+        {
+
+           /* board.activePentomino = pentomino;
             if (!board.checkCollision(firstPosition, pentomino)) {
                 board.printBoard();
                 board.fillPentomino(firstPosition, pentomino, 1);
@@ -634,7 +619,7 @@ public class Board  implements KeyListener {
             int keyPressed = System.in.read();
 
             if (keyPressed == 'S')
-                board.moveDown(board.currentPosition, board.activePentomino);
+                board.moveDown(board.currentPosition, board.activePentomino);*/
 
 //            while (true) {
                 grid.paintSquares();
