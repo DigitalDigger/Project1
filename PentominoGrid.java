@@ -148,7 +148,6 @@ public class PentominoGrid extends JPanel
                     board.printBoard();
                     board.fillPentomino(firstPosition, pentomino, 1);
                 }
-
         }
 
         if (key == KeyEvent.VK_ENTER) {
