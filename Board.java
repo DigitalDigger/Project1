@@ -8,14 +8,11 @@ public class Board {
     public HashMap<Coordinate,CellValues>  board = new HashMap<Coordinate, CellValues>();
     private int width = 0;
     private int height = 0;
-    private boolean isSingleIsolatedCells = false;
-    private boolean isDoubleIsolatedCells = false;
-    private boolean isLeastCoordinateHeuristic = false;
     public Coordinate currentPosition;
     public Tetris activeTetris;
     public HashMap<Tetris, ArrayList<Tetris>> pentominos;
 
-    Board(int curWidth, int curHeight, boolean inSingleIsoltedCells, boolean inDoubleIsolatedCells, boolean inLeastCoordinateHeuristic)
+    Board(int curWidth, int curHeight)
     {
         width = curWidth;
         height = curHeight;
@@ -25,12 +22,6 @@ public class Board {
                 board.put(new Coordinate(x, y), new CellValues(0, 0));
             }
         }
-
-        isSingleIsolatedCells = inSingleIsoltedCells;
-        isDoubleIsolatedCells = inDoubleIsolatedCells;
-        isLeastCoordinateHeuristic = inLeastCoordinateHeuristic;
-
-
     }
 
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
@@ -56,9 +47,10 @@ public class Board {
 
         return false;
     }
-    public void checkFullLine(){
-        int counter = 0;
+    public void checkAndRemoveFullLine(){
+
         for (int a = 0; a < getHeight(); a++) {
+            int counter = 0;
             for (int b = 0; b < getWidth(); b++) {
                 if(board.get(new Coordinate(b, a)).matrixValue==0){
                     break;
@@ -68,6 +60,7 @@ public class Board {
                 }
                 if(counter==getWidth()){
                     System.out.println("FULL LINE on row " + a );
+                    removeFullLine(a);
                     break;
                 }
 
@@ -75,6 +68,11 @@ public class Board {
         }
 
     }
+    public void removeFullLine(int lineNumber){
+            for (int b = 0; b < getWidth(); b++) {
+                board.put(new Coordinate(b, lineNumber), new CellValues(0, 0));
+                }
+            }
 
 
 
@@ -189,7 +187,6 @@ public class Board {
     public void dropLine( int line, int cntr){
         for (int i = 0; i < getWidth(); i++){
             if(board.get(new Coordinate(i,line)).matrixValue  == 1){
-                //int type = GETTYPE;
                 board.put(new Coordinate(i, line+cntr), new CellValues(1, 1));
                 board.put(new Coordinate(i, line), new CellValues(0, 0));
             }
@@ -208,14 +205,8 @@ public class Board {
         int heightBoard=12;
         int widthBoard=5;
 
-
-        boolean heuristicSingleCell = false;
-        boolean heurisricDoubleCell = false;
-        boolean heuristicLeastCoordinate = false;
-
-
         /* create object board */
-        Board board = new Board(widthBoard, heightBoard, heuristicSingleCell, heurisricDoubleCell, heuristicLeastCoordinate);
+        Board board = new Board(widthBoard, heightBoard);
 
 
         /***********************************/

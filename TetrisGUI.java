@@ -145,14 +145,11 @@ public class TetrisGUI extends JPanel
                 board.activeTetris = tetris;
 
                 if (!board.checkCollision(firstPosition, tetris)) {
-                    //board.printBoard();
+
                     board.fillPentomino(firstPosition, tetris, 1);
+                    board.checkAndRemoveFullLine();
                 }
         }
-
-        if (key == KeyEvent.VK_ENTER) {
-        }
-
 
         repaint();
     }
@@ -162,10 +159,6 @@ public class TetrisGUI extends JPanel
         repaint();
     }
 
-    /** Handle the button click. */
-    public void actionPerformed(ActionEvent e) {
-
-    }
 }
 class SquareRx {
 
