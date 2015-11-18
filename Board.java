@@ -8,10 +8,6 @@ public class Board {
     public HashMap<Coordinate,CellValues>  board = new HashMap<Coordinate, CellValues>();
     private int width = 0;
     private int height = 0;
-    private long counter=0;
-    private int successcounter=0;
-    private int oneIsolatedCellCounter = 0;
-    private int twoIsolatedCellCounter = 0;
     private boolean isSingleIsolatedCells = false;
     private boolean isDoubleIsolatedCells = false;
     private boolean isLeastCoordinateHeuristic = false;
@@ -59,6 +55,25 @@ public class Board {
         }
 
         return false;
+    }
+    public void checkFullLine(){
+        int counter = 0;
+        for (int a = 0; a < getHeight(); a++) {
+            for (int b = 0; b < getWidth(); b++) {
+                if(board.get(new Coordinate(b, a)).matrixValue==0){
+                    break;
+                }
+                else {
+                    counter++;
+                }
+                if(counter==getWidth()){
+                    System.out.println("FULL LINE on row " + a );
+                    break;
+                }
+
+            }
+        }
+
     }
 
 
@@ -144,7 +159,7 @@ public class Board {
         if (checkCollision(curCoord, curPento))
             curCoord.y -=1;
         fillPentomino(curCoord, curPento, 1);
-        printBoard();
+       // printBoard();
 
         return new Coordinate(curCoord.x, curCoord.y);
     }
@@ -189,17 +204,25 @@ public class Board {
 
     public static void main(String[] args) throws Exception {
 
+        /* Set the size of the board here */
         int heightBoard=12;
         int widthBoard=5;
+
+
         boolean heuristicSingleCell = false;
         boolean heurisricDoubleCell = false;
         boolean heuristicLeastCoordinate = false;
 
+
+        /* create object board */
         Board board = new Board(widthBoard, heightBoard, heuristicSingleCell, heurisricDoubleCell, heuristicLeastCoordinate);
 
 
-        board.pentominos = new HashMap<Tetris, ArrayList<Tetris>>();
+        /***********************************/
+        /* PUT ALL THE PENTOMINOS IN A MAP */
+        /***********************************/
 
+        board.pentominos = new HashMap<Tetris, ArrayList<Tetris>>();
         ArrayList<Tetris> basicShapes = new ArrayList<Tetris>();
 
         Tetris f = new Tetris(12, 0, 1, 0, 2, 1, 0, 1, 1, 2, 1, true, true);
@@ -271,10 +294,6 @@ public class Board {
         board.pentominos.put(z, zRots);
 
 
-
-
-
-
         /* Pentomino Visualisation */
         TetrisGUI grid = new TetrisGUI(board);
         grid.setFocusable(true);
@@ -292,34 +311,15 @@ public class Board {
         board.activeTetris = tetris;
 
         if (!board.checkCollision(firstPosition, tetris)) {
-            board.printBoard();
+            //board.printBoard();
             board.fillPentomino(firstPosition, tetris, 1);
-            //break;
         }
-
-
 
         while (true)
         {
-
-           /* board.activePentomino = pentomino;
-            if (!board.checkCollision(firstPosition, pentomino)) {
-                board.printBoard();
-                board.fillPentomino(firstPosition, pentomino, 1);
-                //break;
-            }
-
-            int keyPressed = System.in.read();
-
-            if (keyPressed == 'S')
-                board.moveDown(board.currentPosition, board.activePentomino);*/
-
-//            while (true) {
                 grid.paintSquares();
-                //Thread.sleep(5000);
-                //board.moveDown(firstPosition, pentomino);
-                board.printBoard();
-  //          }
+
+                //board.printBoard();
         }
     }
 

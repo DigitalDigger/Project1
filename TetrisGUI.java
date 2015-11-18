@@ -116,7 +116,7 @@ public class TetrisGUI extends JPanel
             Tetris rotatedTetris = board.activeTetris.Rotate();
             board.removePentomino(board.currentPosition, board.activeTetris);
             if (!board.checkCollision(board.currentPosition, rotatedTetris)) {
-                board.printBoard();
+               // board.printBoard();
                 board.fillPentomino(board.currentPosition, rotatedTetris, 1);
                 board.activeTetris = rotatedTetris;
             }
@@ -145,7 +145,7 @@ public class TetrisGUI extends JPanel
                 board.activeTetris = tetris;
 
                 if (!board.checkCollision(firstPosition, tetris)) {
-                    board.printBoard();
+                    //board.printBoard();
                     board.fillPentomino(firstPosition, tetris, 1);
                 }
         }
