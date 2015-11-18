@@ -10,7 +10,7 @@ public class TetrisGUI extends JPanel
     private int COLS;
     private Board board;
     public Color darkOrange = new Color(241,238,244);
-    public Color newColor = new Color(198, 183, 180);
+    public Color newColor = new Color(128, 183, 180);
     public Color darkBlue = new Color(188, 133, 250);
     public Color darkBlack = new Color( 168, 209, 215);
     public Color lightBlack = new Color(164, 233, 244);
@@ -20,6 +20,7 @@ public class TetrisGUI extends JPanel
     public Color Pixie = new Color(255, 179, 179);
     public Color Rainbow = new Color(182, 7, 107);
     public Color Unicorn = new Color( 192, 101, 158);
+    public Color Hidden = new Color( 12, 101, 158);
 
     public TetrisGUI(Board inBoard) {
         board = inBoard;
@@ -59,7 +60,7 @@ public class TetrisGUI extends JPanel
             else if (board.board.get(new Coordinate(i, j)).type == 11)
                 squares[j][i].bgColor = this.newColor;
             else if (board.board.get(new Coordinate(i, j)).type == 12)
-                squares[j][i].bgColor = this.darkOrange;
+                squares[j][i].bgColor = this.Hidden;
 
             repaint();
         }
@@ -138,17 +139,11 @@ public class TetrisGUI extends JPanel
                     currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
                 }
 
-                Coordinate firstPosition = new Coordinate((board.getWidth() / 2), 0);
-                board.currentPosition = firstPosition;
-                Tetris tetris;
-                tetris = board.generatePentomino(board.pentominos);
-                board.activeTetris = tetris;
-            board.checkAndRemoveFullLine();
-                if (!board.checkCollision(firstPosition, tetris)) {
+                board.checkAndRemoveFullLine();
 
-                    board.fillPentomino(firstPosition, tetris, 1);
+                board.generateTetris();
 
-                }
+                board.printBoard();
         }
 
         repaint();

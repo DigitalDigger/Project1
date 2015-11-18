@@ -234,6 +234,21 @@ public void shiftEmptyLines(int lineNumber){
         }
     }
 
+    public void generateTetris() {
+        Coordinate firstPosition = new Coordinate((getWidth() / 2), 0);
+        currentPosition = firstPosition;
+
+        while (true) {
+            Tetris tetris = generatePentomino(pentominos);
+            activeTetris = tetris;
+
+            if (!checkCollision(firstPosition, tetris)) {
+                fillPentomino(firstPosition, tetris, 1);
+                return;
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
 
         /* Set the size of the board here */
@@ -330,16 +345,9 @@ public void shiftEmptyLines(int lineNumber){
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Coordinate firstPosition = new Coordinate((widthBoard / 2), 0);
-        board.currentPosition = firstPosition;
-        Tetris tetris;
-        tetris = board.generatePentomino(board.pentominos);
-        board.activeTetris = tetris;
 
-        if (!board.checkCollision(firstPosition, tetris)) {
-            //board.printBoard();
-            board.fillPentomino(firstPosition, tetris, 1);
-        }
+        board.generateTetris();
+
 
         while (true)
         {
