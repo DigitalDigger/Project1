@@ -11,6 +11,7 @@ public class Board {
     public Coordinate currentPosition;
     public Tetris activeTetris;
     public HashMap<Tetris, ArrayList<Tetris>> pentominos;
+    public int score = 0;
 
     Board(int curWidth, int curHeight)
     {
@@ -23,7 +24,11 @@ public class Board {
             }
         }
     }
-
+    public int calculateScore(int currentScore, int lines){
+        int score;
+        score = currentScore + (int) Math.pow(2,lines);
+        return score;
+    }
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
 
         /* Looping through all the current pentomino coordinates and checking for collissions & outside the board exceptions  */
@@ -68,7 +73,10 @@ public class Board {
 
             }
         }
+
+        score = calculateScore(score,fullLinesCounter);
         System.out.println(fullLinesCounter + "Full lines detected");
+        System.out.println("Your score is now: " + score);
     }
     public void removeFullLine(int lineNumber){
             for (int b = 0; b < getWidth(); b++) {

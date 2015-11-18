@@ -143,11 +143,11 @@ public class TetrisGUI extends JPanel
                 Tetris tetris;
                 tetris = board.generatePentomino(board.pentominos);
                 board.activeTetris = tetris;
-
+            board.checkAndRemoveFullLine();
                 if (!board.checkCollision(firstPosition, tetris)) {
 
                     board.fillPentomino(firstPosition, tetris, 1);
-                    board.checkAndRemoveFullLine();
+
                 }
         }
 
