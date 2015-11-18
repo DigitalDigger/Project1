@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 
-public class PentominoGrid extends JPanel
+public class TetrisGUI extends JPanel
                            implements KeyListener, Cloneable {
     private int ROWS;
     private int COLS;
@@ -21,7 +21,7 @@ public class PentominoGrid extends JPanel
     public Color Rainbow = new Color(182, 7, 107);
     public Color Unicorn = new Color( 192, 101, 158);
 
-    public PentominoGrid(Board inBoard) {
+    public TetrisGUI(Board inBoard) {
         board = inBoard;
         ROWS = board.getHeight();
         COLS = board.getWidth();
@@ -105,28 +105,28 @@ public class PentominoGrid extends JPanel
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            board.currentPosition = board.moveLeft(board.currentPosition, board.activePentomino);
+            board.currentPosition = board.moveLeft(board.currentPosition, board.activeTetris);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            board.currentPosition = board.moveRight(board.currentPosition, board.activePentomino);
+            board.currentPosition = board.moveRight(board.currentPosition, board.activeTetris);
         }
 
         if (key == KeyEvent.VK_UP) {
-            Pentomino rotatedPentomino = board.activePentomino.Rotate();
-            board.removePentomino(board.currentPosition, board.activePentomino);
-            if (!board.checkCollision(board.currentPosition, rotatedPentomino)) {
+            Tetris rotatedTetris = board.activeTetris.Rotate();
+            board.removePentomino(board.currentPosition, board.activeTetris);
+            if (!board.checkCollision(board.currentPosition, rotatedTetris)) {
                 board.printBoard();
-                board.fillPentomino(board.currentPosition, rotatedPentomino, 1);
-                board.activePentomino = rotatedPentomino;
+                board.fillPentomino(board.currentPosition, rotatedTetris, 1);
+                board.activeTetris = rotatedTetris;
             }
             else
-                board.fillPentomino(board.currentPosition, board.activePentomino, 1);
+                board.fillPentomino(board.currentPosition, board.activeTetris, 1);
 
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            board.currentPosition = board.moveDown(board.currentPosition, board.activePentomino);
+            board.currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
         }
 
         if (key == KeyEvent.VK_SPACE) {
@@ -135,18 +135,18 @@ public class PentominoGrid extends JPanel
 
                 while (previousPosition.y != currentPosition.y) {
                     previousPosition = currentPosition.clone();
-                    currentPosition = board.moveDown(board.currentPosition, board.activePentomino);
+                    currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
                 }
 
                 Coordinate firstPosition = new Coordinate((board.getWidth() / 2), 0);
                 board.currentPosition = firstPosition;
-                Pentomino pentomino;
-                pentomino = board.generatePentomino(board.pentominos);
-                board.activePentomino = pentomino;
+                Tetris tetris;
+                tetris = board.generatePentomino(board.pentominos);
+                board.activeTetris = tetris;
 
-                if (!board.checkCollision(firstPosition, pentomino)) {
+                if (!board.checkCollision(firstPosition, tetris)) {
                     board.printBoard();
-                    board.fillPentomino(firstPosition, pentomino, 1);
+                    board.fillPentomino(firstPosition, tetris, 1);
                 }
         }
 
