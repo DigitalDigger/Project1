@@ -48,7 +48,7 @@ public class Board {
         return false;
     }
     public void checkAndRemoveFullLine(){
-
+        int fullLinesCounter = 0;
         for (int a = 0; a < getHeight(); a++) {
             int counter = 0;
             for (int b = 0; b < getWidth(); b++) {
@@ -59,21 +59,47 @@ public class Board {
                     counter++;
                 }
                 if(counter==getWidth()){
+                    fullLinesCounter++;
                     System.out.println("FULL LINE on row " + a );
                     removeFullLine(a);
+                    shiftEmptyLines(a);
                     break;
                 }
 
             }
         }
-
+        System.out.println(fullLinesCounter + "Full lines detected");
     }
     public void removeFullLine(int lineNumber){
             for (int b = 0; b < getWidth(); b++) {
                 board.put(new Coordinate(b, lineNumber), new CellValues(0, 0));
+                int c = b +1;
+                System.out.println("REMOVE FULL LINE STEP: " + c);
+                printBoard();
                 }
             }
+public void shiftEmptyLines(int lineNumber){
+    for (int a = lineNumber; a > 0; a--) {
+        for (int b = 0; b < getWidth(); b++) {
+            int type = 0;
+            int value=0;
+            if(board.get(new Coordinate(b, a-1)) != null) {
+                type = board.get(new Coordinate(b, a-1)).type;
+                value=board.get(new Coordinate(b, a-1)).matrixValue;
+            }
 
+
+            board.put(new Coordinate(b, a-1), new CellValues(0, 0));
+            board.put(new Coordinate(b, a), new CellValues(value, type));
+
+           int c = b +1;
+            System.out.println("SHIFT LINES STEP: " + c);
+            printBoard();
+
+        }
+
+    }
+}
 
 
     public void printBoard() {
@@ -85,6 +111,7 @@ public class Board {
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public void fillPentomino(Coordinate cell, Tetris curTetris, int toAdd ){
