@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import javax.swing.JOptionPane;
 
 public class TetrisGUI extends JPanel
                            implements KeyListener, Cloneable {
@@ -139,7 +140,8 @@ public class TetrisGUI extends JPanel
                     currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
                 }
                 if(board.checkGameOver()){
-                System.exit(0);
+                    JOptionPane.showMessageDialog(null,"Your score is: " + board.score,"Game Over",JOptionPane.WARNING_MESSAGE);
+                    System.exit(0);
                 }
                 board.checkAndRemoveFullLine();
 
