@@ -26,7 +26,7 @@ public class Board {
     }
     public int calculateScore(int currentScore, int lines){
         int score;
-        score = currentScore + (int) Math.pow(2,lines);
+        score = currentScore + (int) Math.pow(3,lines);
         return score;
     }
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
@@ -77,6 +77,20 @@ public class Board {
         score = calculateScore(score,fullLinesCounter);
         System.out.println(fullLinesCounter + "Full lines detected");
         System.out.println("Your score is now: " + score);
+    }
+    public boolean checkGameOver(){
+  boolean gameOver = false;
+
+
+            for (int b = 0; b < getWidth(); b++) {
+                if (board.get(new Coordinate(b, 0)).matrixValue == 1) {
+                    gameOver = true;
+                    System.out.println("GAME OVER YOUR");
+                    System.out.println("YOUR SCORE IS: " + score);
+                    break;
+                }
+            }
+        return gameOver;
     }
     public void removeFullLine(int lineNumber){
             for (int b = 0; b < getWidth(); b++) {

@@ -138,7 +138,9 @@ public class TetrisGUI extends JPanel
                     previousPosition = currentPosition.clone();
                     currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
                 }
-
+                if(board.checkGameOver()){
+                System.exit(0);
+                }
                 board.checkAndRemoveFullLine();
 
                 board.generateTetris();
