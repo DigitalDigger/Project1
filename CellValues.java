@@ -1,5 +1,4 @@
-public class CellValues
-{
+public class CellValues {
     public int matrixValue = 0;
     public int type = 0;
 
