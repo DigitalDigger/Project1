@@ -4,13 +4,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Board {
-    public HashMap<Coordinate, CellValues> board = new HashMap<Coordinate, CellValues>();
+    private HashMap<Coordinate, CellValues> board = new HashMap<Coordinate, CellValues>();
     private int width = 0;
     private int height = 0;
-    public Coordinate currentPosition;
-    public Tetris activeTetris;
-    public HashMap<Tetris, ArrayList<Tetris>> pentominos;
-    public int score = 0;
+    private Coordinate currentPosition;
+    private Tetris activeTetris;
+    private HashMap<Tetris, ArrayList<Tetris>> pentominos;
+    private int score = 0;
+
+    public int getScore(){
+        return score;
+    }
+    
+
+    public Tetris getActiveTetris(){
+        return activeTetris;
+    }
+
+    public Tetris setActiveTetris(Tetris newTetris){
+        activeTetris = newTetris;
+        return activeTetris;
+    }
+
+    public HashMap<Coordinate, CellValues> getBoard(){
+        return board;
+    }
+
+    public Coordinate getCurrentPosition(){
+        return currentPosition;
+    }
+
+    public Coordinate setCurrentPosition(Coordinate newCoordinate){
+       currentPosition = newCoordinate;
+        return currentPosition;
+
+    }
 
     Board(int curWidth, int curHeight) {
         width = curWidth;
@@ -32,7 +60,7 @@ public class Board {
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
 
         /* Looping through all the current pentomino coordinates and checking for collissions & outside the board exceptions  */
-        for (Coordinate curCoord : curTetris.coords) {
+        for (Coordinate curCoord : curTetris.getCoords()) {
 
             /* check if our pentomino is going to be placed outside of the board */
             if (cell.getY() + curCoord.getY() >= getHeight() || cell.getY() < 0 || cell.getX() + curCoord.getX() >= getWidth() || cell.getX() + curCoord.getX() < 0)
@@ -141,7 +169,7 @@ public class Board {
 
     public void fillPentomino(Coordinate cell, Tetris curTetris, int toAdd) {
 
-        for (Coordinate curCoord : curTetris.coords) {
+        for (Coordinate curCoord : curTetris.getCoords()) {
 
             board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()), new CellValues(toAdd, curTetris.getType()));
 
@@ -150,7 +178,7 @@ public class Board {
 
     public void removePentomino(Coordinate cell, Tetris curTetris) {
 
-        for (Coordinate curCoord : curTetris.coords) {
+        for (Coordinate curCoord : curTetris.getCoords()) {
 
             board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()), new CellValues(0, 0));
 

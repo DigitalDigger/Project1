@@ -2,10 +2,14 @@ import java.util.*;
 
 public class Tetris {
 
-	public List<Coordinate> coords = new ArrayList<Coordinate>();
+	private List<Coordinate> coords = new ArrayList<Coordinate>();
 	private boolean isRotatable;
 	private boolean isFlippable;
 	private int type;
+
+	public List<Coordinate> getCoords(){
+		return coords;
+	}
 
 
 	public Tetris(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, boolean l, boolean m){

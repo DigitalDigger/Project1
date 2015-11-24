@@ -10,18 +10,18 @@ public class TetrisGUI extends JPanel
     private int ROWS;
     private int COLS;
     private Board board;
-    public Color darkOrange = new Color(241, 238, 244);
-    public Color newColor = new Color(128, 183, 180);
-    public Color darkBlue = new Color(188, 133, 250);
-    public Color darkBlack = new Color(168, 209, 215);
-    public Color lightBlack = new Color(164, 233, 244);
-    public Color manlyBlue = new Color(134, 130, 210);
-    public Color fragileMasculinity = new Color(114, 50, 114);
-    public Color Pinkie = new Color(29, 143, 150);
-    public Color Pixie = new Color(255, 179, 179);
-    public Color Rainbow = new Color(182, 7, 107);
-    public Color Unicorn = new Color(192, 101, 158);
-    public Color Hidden = new Color(12, 101, 158);
+    private Color darkOrange = new Color(241, 238, 244);
+    private Color newColor = new Color(128, 183, 180);
+    private Color darkBlue = new Color(188, 133, 250);
+    private Color darkBlack = new Color(168, 209, 215);
+    private Color lightBlack = new Color(164, 233, 244);
+    private Color manlyBlue = new Color(134, 130, 210);
+    private Color fragileMasculinity = new Color(114, 50, 114);
+    private Color Pinkie = new Color(29, 143, 150);
+    private Color Pixie = new Color(255, 179, 179);
+    private Color Rainbow = new Color(182, 7, 107);
+    private Color Unicorn = new Color(192, 101, 158);
+    private Color Hidden = new Color(12, 101, 158);
 
     public TetrisGUI(Board inBoard) {
         board = inBoard;
@@ -37,31 +37,31 @@ public class TetrisGUI extends JPanel
             initSquares();
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                if (board.board.get(new Coordinate(i, j)).getType() == 0)
+                if (board.getBoard().get(new Coordinate(i, j)).getType() == 0)
                     squares[j][i].bgColor = this.darkOrange;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 1)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 1)
                     squares[j][i].bgColor = this.darkBlue;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 2)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 2)
                     squares[j][i].bgColor = this.darkBlack;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 3)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 3)
                     squares[j][i].bgColor = this.lightBlack;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 4)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 4)
                     squares[j][i].bgColor = this.manlyBlue;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 5)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 5)
                     squares[j][i].bgColor = this.fragileMasculinity;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 6)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 6)
                     squares[j][i].bgColor = this.Pinkie;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 7)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 7)
                     squares[j][i].bgColor = this.Unicorn;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 8)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 8)
                     squares[j][i].bgColor = Color.magenta;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 9)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 9)
                     squares[j][i].bgColor = this.Pixie;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 10)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 10)
                     squares[j][i].bgColor = this.Rainbow;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 11)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 11)
                     squares[j][i].bgColor = this.newColor;
-                else if (board.board.get(new Coordinate(i, j)).getType() == 12)
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 12)
                     squares[j][i].bgColor = this.Hidden;
 
                 repaint();
@@ -113,39 +113,39 @@ public class TetrisGUI extends JPanel
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
-            board.currentPosition = board.moveLeft(board.currentPosition, board.activeTetris);
+            board.setCurrentPosition(board.moveLeft(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            board.currentPosition = board.moveRight(board.currentPosition, board.activeTetris);
+            board.setCurrentPosition( board.moveRight(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
         if (key == KeyEvent.VK_UP) {
-            Tetris rotatedTetris = board.activeTetris.Rotate();
-            board.removePentomino(board.currentPosition, board.activeTetris);
-            if (!board.checkCollision(board.currentPosition, rotatedTetris)) {
+            Tetris rotatedTetris = board.getActiveTetris().Rotate();
+            board.removePentomino(board.getCurrentPosition(), board.getActiveTetris());
+            if (!board.checkCollision(board.getCurrentPosition(), rotatedTetris)) {
                 // board.printBoard();
-                board.fillPentomino(board.currentPosition, rotatedTetris, 1);
-                board.activeTetris = rotatedTetris;
+                board.fillPentomino(board.getCurrentPosition(), rotatedTetris, 1);
+                board.setActiveTetris(rotatedTetris);
             } else
-                board.fillPentomino(board.currentPosition, board.activeTetris, 1);
+                board.fillPentomino(board.getCurrentPosition(), board.getActiveTetris(), 1);
 
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            board.currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
+            board.setCurrentPosition( board.moveDown(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
         if (key == KeyEvent.VK_SPACE) {
-            Coordinate currentPosition = board.currentPosition.clone();
+            Coordinate currentPosition = board.getCurrentPosition().clone();
             Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
 
             while (previousPosition.getY() != currentPosition.getY()) {
                 previousPosition = currentPosition.clone();
-                currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
+                currentPosition = board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
             }
             if (board.checkGameOver()) {
-                JOptionPane.showMessageDialog(null, "Your score is: " + board.score, "Game Over", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Your score is: " + board.getScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
                 System.exit(0);
             }
             board.checkAndRemoveFullLine();
