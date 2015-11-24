@@ -115,7 +115,7 @@ public class Board {
 
 
                 board.put(new Coordinate(b, a - 1), new CellValues(0, 0));
-                board.put(new Coordinate(b, a), new CellValues(value, getType()));
+                board.put(new Coordinate(b, a), new CellValues(value, type));
 
                 int c = b + 1;
                 System.out.println("SHIFT LINES STEP: " + c);
