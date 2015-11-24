@@ -31,7 +31,7 @@ public class Tetris {
 		return type;
 	}
 
-	public void setType(int x){
+	public int setType(int x){
 		this.type = x;
 		return type;
 	}
@@ -75,7 +75,7 @@ public class Tetris {
 		//Transposition of the array (rotation +90° and flip all in once
 		for (Coordinate curCoord : coords){
 			//Coordinate temp = new Coordinate(coords.get(i));
-			Coordinate Transp = new Coordinate(Coordinate.curcoord.getY() , curCoord.getX());
+			Coordinate Transp = new Coordinate(curCoord.getY() , curCoord.getX());
 			Coordinate Reverse = new Coordinate((5 - (Transp.getX()) - 1), Transp.getY());
 			Rotated.add(Reverse);
 		}

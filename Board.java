@@ -41,7 +41,7 @@ public class Board {
             /* Let's check if there are collissions :) */
             try {
                 // if (board.get(new Coordinate(cell.x, cell.y)).geMatrixValue() + board.get(new Coordinate(curCoord.getX() + cell.x, curCoord.getY() + cell.y)).geMatrixValue() > 1)
-                if (board.get(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()).getMatrixValue() == 1)
+                if (board.get(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY())).getMatrixValue() == 1)
                     return true;
 
             } catch (Exception e) {
@@ -143,7 +143,7 @@ public class Board {
 
         for (Coordinate curCoord : curTetris.coords) {
 
-            board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY(), new CellValues(toAdd, curTetris.type));
+            board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()), new CellValues(toAdd, curTetris.getType()));
 
         }
     }
@@ -184,9 +184,9 @@ public class Board {
 
     public Coordinate moveLeft(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.getX() -= 1;
+        curCoord.setX(curCoord.getX()-1);
         if (checkCollision(curCoord, curPento))
-            curCoord.getX() += 1;
+            curCoord.setX(curCoord.getX() + 1);
         fillPentomino(curCoord, curPento, 1);
 
         return new Coordinate(curCoord.getX(), curCoord.getY());
@@ -194,9 +194,9 @@ public class Board {
 
     public Coordinate moveRight(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.getX() += 1;
+        curCoord.setX(curCoord.getX() + 1);
         if (checkCollision(curCoord, curPento))
-            curCoord.getX() -= 1;
+            curCoord.setX(curCoord.getX() - 1);
         fillPentomino(curCoord, curPento, 1);
 
         return new Coordinate(curCoord.getX(), curCoord.getY());
@@ -204,9 +204,9 @@ public class Board {
 
     public Coordinate moveDown(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.getY() += 1;
+        curCoord.setY(curCoord.getY()+1);
         if (checkCollision(curCoord, curPento))
-            curCoord.getY() -= 1;
+            curCoord.setY(curCoord.getY() - 1);
         fillPentomino(curCoord, curPento, 1);
         // printBoard();
 

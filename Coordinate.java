@@ -11,10 +11,17 @@ public class Coordinate {
         return this.x;
     }
 
-    public int gety(){
+    public int getY(){
         return this.y;
     }
 
+    public void setX(int newX){
+        x = newX;
+    }
+
+    public void setY(int newY){
+        y = newY;
+    }
     public void Coordinate(int x, int y){
         this.x = x;
         this.y = y;
