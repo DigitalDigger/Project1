@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.*;
+
 
 public class Board {
     private HashMap<Coordinate, CellValues> board = new HashMap<Coordinate, CellValues>();
@@ -361,6 +365,8 @@ public class Board {
             /***********************************/
             /*  ADD FALLING PENTOMINO HERE!!!  */
             /***********************************/
+            
+             FallingTimer timer = new FallingTimer(board, 2000);
         }
     }
 
