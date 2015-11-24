@@ -35,13 +35,13 @@ public class Board {
         for (Coordinate curCoord : curTetris.coords) {
 
             /* check if our pentomino is going to be placed outside of the board */
-            if (cell.y + curCoord.y >= getHeight() || cell.y < 0 || cell.x + curCoord.x >= getWidth() || cell.x + curCoord.x < 0)
+            if (cell.getY() + curCoord.getY() >= getHeight() || cell.getY() < 0 || cell.getX() + curCoord.getX() >= getWidth() || cell.getX() + curCoord.getX() < 0)
                 return true;
 
             /* Let's check if there are collissions :) */
             try {
-                // if (board.get(new Coordinate(cell.x, cell.y)).matrixValue + board.get(new Coordinate(curCoord.x + cell.x, curCoord.y + cell.y)).matrixValue > 1)
-                if (board.get(new Coordinate(curCoord.x + cell.x, curCoord.y + cell.y)).matrixValue == 1)
+                // if (board.get(new Coordinate(cell.x, cell.y)).geMatrixValue() + board.get(new Coordinate(curCoord.getX() + cell.x, curCoord.getY() + cell.y)).geMatrixValue() > 1)
+                if (board.get(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()).getMatrixValue() == 1)
                     return true;
 
             } catch (Exception e) {
@@ -58,7 +58,7 @@ public class Board {
         for (int a = 0; a < getHeight(); a++) {
             int counter = 0;
             for (int b = 0; b < getWidth(); b++) {
-                if (board.get(new Coordinate(b, a)).matrixValue == 0) {
+                if (board.get(new Coordinate(b, a)).getMatrixValue() == 0) {
                     break;
                 } else {
                     counter++;
@@ -84,7 +84,7 @@ public class Board {
 
 
         for (int b = 0; b < getWidth(); b++) {
-            if (board.get(new Coordinate(b, 0)).matrixValue == 1) {
+            if (board.get(new Coordinate(b, 0)).getMatrixValue() == 1) {
                 gameOver = true;
                 System.out.println("GAME OVER YOUR");
                 System.out.println("YOUR SCORE IS: " + score);
@@ -109,13 +109,13 @@ public class Board {
                 int type = 0;
                 int value = 0;
                 if (board.get(new Coordinate(b, a - 1)) != null) {
-                    type = board.get(new Coordinate(b, a - 1)).type;
-                    value = board.get(new Coordinate(b, a - 1)).matrixValue;
+                    type = board.get(new Coordinate(b, a - 1)).getType();
+                    value = board.get(new Coordinate(b, a - 1)).getMatrixValue();
                 }
 
 
                 board.put(new Coordinate(b, a - 1), new CellValues(0, 0));
-                board.put(new Coordinate(b, a), new CellValues(value, type));
+                board.put(new Coordinate(b, a), new CellValues(value, getType()));
 
                 int c = b + 1;
                 System.out.println("SHIFT LINES STEP: " + c);
@@ -132,7 +132,7 @@ public class Board {
         //Method to print the pentominoes
         for (int a = 0; a < getHeight(); a++) {
             for (int b = 0; b < getWidth(); b++) {
-                System.out.print(board.get(new Coordinate(b, a)).matrixValue + "  ");
+                System.out.print(board.get(new Coordinate(b, a)).getMatrixValue() + "  ");
             }
             System.out.println();
         }
@@ -143,7 +143,7 @@ public class Board {
 
         for (Coordinate curCoord : curTetris.coords) {
 
-            board.put(new Coordinate(curCoord.x + cell.x, curCoord.y + cell.y), new CellValues(toAdd, curTetris.type));
+            board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY(), new CellValues(toAdd, curTetris.type));
 
         }
     }
@@ -152,7 +152,7 @@ public class Board {
 
         for (Coordinate curCoord : curTetris.coords) {
 
-            board.put(new Coordinate(curCoord.x + cell.x, curCoord.y + cell.y), new CellValues(0, 0));
+            board.put(new Coordinate(curCoord.getX() + cell.getX(), curCoord.getY() + cell.getY()), new CellValues(0, 0));
 
         }
     }
@@ -184,33 +184,33 @@ public class Board {
 
     public Coordinate moveLeft(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.x -= 1;
+        curCoord.getX() -= 1;
         if (checkCollision(curCoord, curPento))
-            curCoord.x += 1;
+            curCoord.getX() += 1;
         fillPentomino(curCoord, curPento, 1);
 
-        return new Coordinate(curCoord.x, curCoord.y);
+        return new Coordinate(curCoord.getX(), curCoord.getY());
     }
 
     public Coordinate moveRight(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.x += 1;
+        curCoord.getX() += 1;
         if (checkCollision(curCoord, curPento))
-            curCoord.x -= 1;
+            curCoord.getX() -= 1;
         fillPentomino(curCoord, curPento, 1);
 
-        return new Coordinate(curCoord.x, curCoord.y);
+        return new Coordinate(curCoord.getX(), curCoord.getY());
     }
 
     public Coordinate moveDown(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.y += 1;
+        curCoord.getY() += 1;
         if (checkCollision(curCoord, curPento))
-            curCoord.y -= 1;
+            curCoord.getY() -= 1;
         fillPentomino(curCoord, curPento, 1);
         // printBoard();
 
-        return new Coordinate(curCoord.x, curCoord.y);
+        return new Coordinate(curCoord.getX(), curCoord.getY());
     }
 
     public void generateTetris() {
@@ -267,7 +267,7 @@ public class Board {
         for (Tetris basic : basicShapes) {
             ArrayList<Tetris> Rotatable = new ArrayList<Tetris>();
             Rotatable.add(basic);
-            if (basic.isRotatable) {
+            if (basic.getRotatable()) {
                 Tetris basicRot1 = basic.Rotate();
                 Rotatable.add(basicRot1);
                 Tetris basicRot2 = basicRot1.Rotate();
@@ -276,7 +276,7 @@ public class Board {
                 Rotatable.add(basicRot3);
             }
 
-            if (basic.isFlippable) {
+            if (basic.getFlippable()) {
                 Tetris flipped = basic.Flip();
                 Rotatable.add(flipped);
                 Tetris basicFlip1 = flipped.Rotate();

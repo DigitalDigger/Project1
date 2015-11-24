@@ -3,9 +3,9 @@ import java.util.*;
 public class Tetris {
 
 	public List<Coordinate> coords = new ArrayList<Coordinate>();
-	public boolean isRotatable;
-	public boolean isFlippable;
-	public int type;
+	private boolean isRotatable;
+	private boolean isFlippable;
+	private int type;
 
 
 	public Tetris(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j, int k, boolean l, boolean m){
@@ -19,6 +19,22 @@ public class Tetris {
 		type = a;
 	}
 
+	public boolean getRotatable(){
+		return isRotatable;
+	}
+
+	public boolean getFlippable(){
+		return isFlippable;
+	}
+
+	public int getType(){
+		return type;
+	}
+
+	public void setType(int x){
+		this.type = x;
+		return type;
+	}
 
 	public Tetris(List<Coordinate> newCoords, boolean l, boolean m, int inType)
 	{
@@ -59,15 +75,15 @@ public class Tetris {
 		//Transposition of the array (rotation +90° and flip all in once
 		for (Coordinate curCoord : coords){
 			//Coordinate temp = new Coordinate(coords.get(i));
-			Coordinate Transp = new Coordinate(curCoord.y, curCoord.x);
-			Coordinate Reverse = new Coordinate((5 - (Transp.x) - 1), Transp.y);
+			Coordinate Transp = new Coordinate(Coordinate.curcoord.getY() , curCoord.getX());
+			Coordinate Reverse = new Coordinate((5 - (Transp.getX()) - 1), Transp.getY());
 			Rotated.add(Reverse);
 		}
 
 		int[] position = new int[5];
 		for (int a = 0; a < 5; a++){
 			//Coordinate cell = new Coordinate(Rotated.get(a));
-			position[a] = Rotated.get(a).x;
+			position[a] = Rotated.get(a).getX();
 		}
 
 		List<Coordinate> ShapedUp = new ArrayList<Coordinate>();
@@ -75,7 +91,7 @@ public class Tetris {
 		int c = MinAr(position);
 		for (Coordinate Up : Rotated){
 			//Coordinate Up = new Coordinate (Rotated.get(e));
-			Coordinate ShapeUp = new Coordinate((Up.x)-c, Up.y);
+			Coordinate ShapeUp = new Coordinate((Up.getX())-c, Up.getY());
 			ShapedUp.add(ShapeUp);
 		}
 
@@ -97,7 +113,7 @@ public class Tetris {
 			return false;
 		// object must be Test at this point
 		Tetris pento = (Tetris)obj;
-		return type == pento.type;
+		return type == pento.getType();
 	}
 
 	public Tetris Flip(){
@@ -105,7 +121,7 @@ public class Tetris {
 		List<Coordinate> flipped = new ArrayList<Coordinate>();
 
 		for (Coordinate curCoord : coords){
-			Coordinate Flip = new Coordinate (5 - 1 - curCoord.x, curCoord.y);
+			Coordinate Flip = new Coordinate (5 - 1 - curCoord.getX(), curCoord.getY());
 			flipped.add(Flip);
 		}
 
@@ -115,7 +131,7 @@ public class Tetris {
 
 		for (int a = 0; a < 5; a++){
 			//Coordinate cell = new Coordinate();
-			position[a] = flipped.get(a).x;
+			position[a] = flipped.get(a).getX();
 		}
 
 		List<Coordinate> ShapedUp = new ArrayList<Coordinate>();
@@ -123,7 +139,7 @@ public class Tetris {
 		int c = MinAr(position);
 
 		for (Coordinate Upped : flipped){
-			Coordinate ShapeUp = new Coordinate(Upped.x - c, Upped.y);
+			Coordinate ShapeUp = new Coordinate(Upped.getX() - c, Upped.getY());
 			Up.add(ShapeUp);
 		}
 

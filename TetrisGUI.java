@@ -37,31 +37,31 @@ public class TetrisGUI extends JPanel
             initSquares();
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                if (board.board.get(new Coordinate(i, j)).type == 0)
+                if (board.board.get(new Coordinate(i, j)).getType() == 0)
                     squares[j][i].bgColor = this.darkOrange;
-                else if (board.board.get(new Coordinate(i, j)).type == 1)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 1)
                     squares[j][i].bgColor = this.darkBlue;
-                else if (board.board.get(new Coordinate(i, j)).type == 2)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 2)
                     squares[j][i].bgColor = this.darkBlack;
-                else if (board.board.get(new Coordinate(i, j)).type == 3)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 3)
                     squares[j][i].bgColor = this.lightBlack;
-                else if (board.board.get(new Coordinate(i, j)).type == 4)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 4)
                     squares[j][i].bgColor = this.manlyBlue;
-                else if (board.board.get(new Coordinate(i, j)).type == 5)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 5)
                     squares[j][i].bgColor = this.fragileMasculinity;
-                else if (board.board.get(new Coordinate(i, j)).type == 6)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 6)
                     squares[j][i].bgColor = this.Pinkie;
-                else if (board.board.get(new Coordinate(i, j)).type == 7)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 7)
                     squares[j][i].bgColor = this.Unicorn;
-                else if (board.board.get(new Coordinate(i, j)).type == 8)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 8)
                     squares[j][i].bgColor = Color.magenta;
-                else if (board.board.get(new Coordinate(i, j)).type == 9)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 9)
                     squares[j][i].bgColor = this.Pixie;
-                else if (board.board.get(new Coordinate(i, j)).type == 10)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 10)
                     squares[j][i].bgColor = this.Rainbow;
-                else if (board.board.get(new Coordinate(i, j)).type == 11)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 11)
                     squares[j][i].bgColor = this.newColor;
-                else if (board.board.get(new Coordinate(i, j)).type == 12)
+                else if (board.board.get(new Coordinate(i, j)).getType() == 12)
                     squares[j][i].bgColor = this.Hidden;
 
                 repaint();
@@ -138,9 +138,9 @@ public class TetrisGUI extends JPanel
 
         if (key == KeyEvent.VK_SPACE) {
             Coordinate currentPosition = board.currentPosition.clone();
-            Coordinate previousPosition = new Coordinate(currentPosition.x, currentPosition.y - 1);
+            Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
 
-            while (previousPosition.y != currentPosition.y) {
+            while (previousPosition.getY() != currentPosition.getY()) {
                 previousPosition = currentPosition.clone();
                 currentPosition = board.moveDown(board.currentPosition, board.activeTetris);
             }

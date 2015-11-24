@@ -1,10 +1,23 @@
 public class Coordinate {
-    public int x;
-    public int y;
+    private int x;
+    private int y;
 
     public Coordinate(int a, int b) {
         x = a;
         y = b;
+    }
+
+    public int getX(){
+        return this.x;
+    }
+
+    public int gety(){
+        return this.y;
+    }
+
+    public void Coordinate(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 
     public int hashCode() {
