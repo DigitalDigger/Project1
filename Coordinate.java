@@ -14,6 +14,15 @@ public class Coordinate {
     public int getY(){
         return this.y;
     }
+    
+    public void pushLeft(){
+    	x--;
+    }
+    
+    public void pushRight(){
+    	x++;
+    }
+    
 
     public void setX(int newX){
         x = newX;

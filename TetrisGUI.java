@@ -25,6 +25,7 @@ public class TetrisGUI extends JPanel
 
     public TetrisGUI(Board inBoard) {
         board = inBoard;
+        setSize(board.getWidth() * 100, board.getHeight());
         ROWS = board.getHeight();
         COLS = board.getWidth();
         addKeyListener(this);
