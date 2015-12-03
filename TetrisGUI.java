@@ -109,25 +109,31 @@ public class TetrisGUI extends JPanel
     }
 
     public void paintComponent(Graphics g) {
+        Rectangle2D scoreRectangle = new Rectangle2D.Double(585,0,400,78);
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         if (squares == null)
             initSquares();
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
+                if(squares!=null)
                 squares[j][i].draw(g2);
             }
         }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.DARK_GRAY);
+        g2.fill(scoreRectangle);
+        g2.setColor(Color.white);
         Font font = new Font("Serif", Font.PLAIN, 50);
         g2.setFont(font);
-        g2.drawString("Your score is: " + board.highscore.getCurrentScore(), 300, 75);
+        g2.drawString("Your score is: " + board.highscore.getCurrentScore(), 620, 50);
+
     }
 
     private void initSquares() {
         squares = new SquareRx[ROWS][COLS];
-        int w = getWidth();
+        int w = getWidth() - 400;
         int h = getHeight();
         double xInc = (double) (w) / COLS;
         double yInc = (double) (h) / ROWS;
@@ -139,6 +145,7 @@ public class TetrisGUI extends JPanel
                 Rectangle2D.Double r =
                         new Rectangle2D.Double(x, y, xInc, yInc);
                 squares[i][j] = new SquareRx(r);
+
             }
         }
     }
@@ -207,7 +214,7 @@ public class TetrisGUI extends JPanel
                 previousPosition = currentPosition.clone();
                 currentPosition = board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
             }
-
+            board.checkAndRemoveFullLine();
             if (board.checkGameOver()) {
                 board.highscore.addCurrentScore();
                 board.highscore.writeToHighscores();
@@ -232,7 +239,7 @@ public class TetrisGUI extends JPanel
 
                 System.exit(0);
             }
-            board.checkAndRemoveFullLine();
+
 
             board.generateTetris();
 

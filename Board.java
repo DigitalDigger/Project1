@@ -378,8 +378,9 @@ public class Board extends Highscore {
         TetrisGUI grid = new TetrisGUI(board);
         grid.setFocusable(true);
         JFrame j = new JFrame();
+        //j.setResizable(false);
         j.add(grid);
-        j.setSize(board.getWidth() * 50, board.getHeight() * 50);
+        j.setSize(board.getWidth() * 120 + 400, board.getHeight() * 80);
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
