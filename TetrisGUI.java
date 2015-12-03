@@ -209,10 +209,9 @@ public class TetrisGUI extends JPanel
             }
 
             if (board.checkGameOver()) {
-                System.out.println("game over");
-
                 board.highscore.addCurrentScore();
                 board.highscore.writeToHighscores();
+                System.out.println("game over");
 
                 if(board.highscore.getCurrentScore()> board.highscore.getHighscore(6)){
                     if(board.highscore.getCurrentScore()==board.highscore.getHighscore(1)){

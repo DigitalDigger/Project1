@@ -117,8 +117,6 @@ public class Board extends Highscore {
 
     public boolean checkGameOver() {
         boolean gameOver = false;
-
-
         for (int b = 0; b < getWidth(); b++) {
             if (board.get(new Coordinate(b, 0)).getMatrixValue() == 1) {
                 gameOver = true;
@@ -287,9 +285,6 @@ public class Board extends Highscore {
                 return;
             }
         }
-        JOptionPane.showMessageDialog(null, "Your score is: " + highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
-        System.exit(0);
-
         // }
     }
 

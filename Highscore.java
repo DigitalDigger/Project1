@@ -56,7 +56,7 @@ public class Highscore {
         File file = new File(highscoreFile);
         try {
 
-            int i = 4;
+            int i = 0;
 
             if (!file.isFile()) {
                 file.createNewFile();
@@ -69,7 +69,7 @@ public class Highscore {
             BufferedReader bufferedReader =
                     new BufferedReader(fileReader);
 
-            while ((line = bufferedReader.readLine()) != null && i >= 0) {
+            while ((line = bufferedReader.readLine()) != null && i < 5) {
                 int score = 0;
                 try {
                     score = Integer.parseInt(line);
@@ -77,7 +77,7 @@ public class Highscore {
                 }
 
                 highscore[i] = score;
-                i--;
+                i++;
             }
 
 
@@ -100,6 +100,7 @@ public class Highscore {
     }
 
     public void writeToHighscores() {
+        System.out.println("testing write");
         try {
             // input the file content to the String "input"
             String input = "";
