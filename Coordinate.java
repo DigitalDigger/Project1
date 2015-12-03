@@ -7,31 +7,32 @@ public class Coordinate {
         y = b;
     }
 
-    public int getX(){
+    public int getX() {
         return this.x;
     }
 
-    public int getY(){
+    public int getY() {
         return this.y;
     }
-    
-    public void pushLeft(){
-    	x--;
-    }
-    
-    public void pushRight(){
-    	x++;
-    }
-    
 
-    public void setX(int newX){
+    public void pushLeft() {
+        x--;
+    }
+
+    public void pushRight() {
+        x++;
+    }
+
+
+    public void setX(int newX) {
         x = newX;
     }
 
-    public void setY(int newY){
+    public void setY(int newY) {
         y = newY;
     }
-    public void Coordinate(int x, int y){
+
+    public void Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
     }

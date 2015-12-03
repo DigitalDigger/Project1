@@ -1,13 +1,12 @@
 import javax.swing.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.*;
 
 
-public class Board {
+public class Board extends Highscore {
     private HashMap<Coordinate, CellValues> board = new HashMap<Coordinate, CellValues>();
     private int width = 0;
     private int height = 0;
@@ -15,33 +14,29 @@ public class Board {
     private static Tetris activeTetris;
     private static Tetris futureTetris;
     private HashMap<Tetris, ArrayList<Tetris>> pentominos;
-    private int score = 0;
     private int pentoCheck = 0;
+    public Highscore highscore = new Highscore("anthony");
 
-    public int getScore(){
-        return score;
-    }
-    
-
-    public Tetris getActiveTetris(){
+    public Tetris getActiveTetris() {
         return activeTetris;
     }
 
-    public Tetris setActiveTetris(Tetris newTetris){
+    public Tetris setActiveTetris(Tetris newTetris) {
         activeTetris = newTetris;
         return activeTetris;
     }
 
-    public HashMap<Coordinate, CellValues> getBoard(){
+
+    public HashMap<Coordinate, CellValues> getBoard() {
         return board;
     }
 
-    public Coordinate getCurrentPosition(){
+    public Coordinate getCurrentPosition() {
         return currentPosition;
     }
 
-    public Coordinate setCurrentPosition(Coordinate newCoordinate){
-       currentPosition = newCoordinate;
+    public Coordinate setCurrentPosition(Coordinate newCoordinate) {
+        currentPosition = newCoordinate;
         return currentPosition;
 
     }
@@ -56,9 +51,9 @@ public class Board {
             }
         }
     }
-    
-    public void setZeros(){
-    	for (int y = 0; y < getHeight(); y++) {
+
+    public void setZeros() {
+        for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 board.put(new Coordinate(x, y), new CellValues(0, 0));
             }
@@ -107,18 +102,17 @@ public class Board {
                 }
                 if (counter == getWidth()) {
                     fullLinesCounter++;
-                    System.out.println("FULL LINE on row " + a);
+                    //System.out.println("FULL LINE on row " + a);
                     removeFullLine(a);
                     shiftEmptyLines(a);
                     break;
                 }
-
             }
         }
-
-        score = calculateScore(score, fullLinesCounter);
-        System.out.println(fullLinesCounter + "Full lines detected");
-        System.out.println("Your score is now: " + score);
+        highscore.calculateScore(fullLinesCounter);
+        //score = calculateScore(score, fullLinesCounter);
+        System.out.println(fullLinesCounter + " Full line detected");
+        System.out.println("Your score is now: " + highscore.getCurrentScore());
     }
 
     public boolean checkGameOver() {
@@ -129,7 +123,7 @@ public class Board {
             if (board.get(new Coordinate(b, 0)).getMatrixValue() == 1) {
                 gameOver = true;
                 System.out.println("GAME OVER YOUR");
-                System.out.println("YOUR SCORE IS: " + score);
+                System.out.println("YOUR SCORE IS: " + highscore.getCurrentScore());
                 break;
             }
         }
@@ -140,8 +134,8 @@ public class Board {
         for (int b = 0; b < getWidth(); b++) {
             board.put(new Coordinate(b, lineNumber), new CellValues(0, 0));
             int c = b + 1;
-            System.out.println("REMOVE FULL LINE STEP: " + c);
-            printBoard();
+            //System.out.println("REMOVE FULL LINE STEP: " + c);
+            //printBoard();
         }
     }
 
@@ -160,8 +154,8 @@ public class Board {
                 board.put(new Coordinate(b, a), new CellValues(value, type));
 
                 int c = b + 1;
-                System.out.println("SHIFT LINES STEP: " + c);
-                printBoard();
+                // System.out.println("SHIFT LINES STEP: " + c);
+                //printBoard();
 
             }
 
@@ -226,7 +220,7 @@ public class Board {
 
     public Coordinate moveLeft(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.setX(curCoord.getX()-1);
+        curCoord.setX(curCoord.getX() - 1);
         if (checkCollision(curCoord, curPento))
             curCoord.setX(curCoord.getX() + 1);
         fillPentomino(curCoord, curPento, 1);
@@ -246,7 +240,7 @@ public class Board {
 
     public Coordinate moveDown(Coordinate curCoord, Tetris curPento) {
         removePentomino(curCoord, curPento);
-        curCoord.setY(curCoord.getY()+1);
+        curCoord.setY(curCoord.getY() + 1);
         if (checkCollision(curCoord, curPento))
             curCoord.setY(curCoord.getY() - 1);
         fillPentomino(curCoord, curPento, 1);
@@ -255,50 +249,50 @@ public class Board {
         return new Coordinate(curCoord.getX(), curCoord.getY());
     }
 
- public void generateTetris() {
+    public void generateTetris() {
         Coordinate firstPosition = new Coordinate((getWidth() / 2), 0);
         currentPosition = firstPosition;
 
-        if (pentoCheck == 0){
-        	Tetris fTetris = generatePentomino(pentominos);
-        	futureTetris = fTetris;
-        	pentoCheck++;
+        if (pentoCheck == 0) {
+            Tetris fTetris = generatePentomino(pentominos);
+            futureTetris = fTetris;
+            pentoCheck++;
         }
         activeTetris = futureTetris;
-        
+
         //while (true) {
-        	Tetris tetris = generatePentomino(pentominos);
-        	
-        	futureTetris = tetris;
-        	
-            if (!checkCollision(firstPosition, activeTetris)) {                
-            		fillPentomino(firstPosition, activeTetris, 1);                             
-            		return;
+        Tetris tetris = generatePentomino(pentominos);
+
+        futureTetris = tetris;
+
+        if (!checkCollision(firstPosition, activeTetris)) {
+            fillPentomino(firstPosition, activeTetris, 1);
+            return;
+        }
+
+        while (firstPosition.getX() != 0) {
+            firstPosition.pushLeft();
+            currentPosition = firstPosition;
+            if (!checkCollision(firstPosition, activeTetris)) {
+                fillPentomino(firstPosition, activeTetris, 1);
+                return;
             }
-            
-            while (firstPosition.getX() != 0) {          
-            	firstPosition.pushLeft();
-            	currentPosition = firstPosition;
-            	if (!checkCollision(firstPosition, activeTetris)) {                
-            		fillPentomino(firstPosition, activeTetris, 1);                             
-            		return;
-                }
+        }
+
+        while (firstPosition.getX() != getWidth()) {
+            firstPosition.pushRight();
+            currentPosition = firstPosition;
+            if (!checkCollision(firstPosition, activeTetris)) {
+                fillPentomino(firstPosition, activeTetris, 1);
+                return;
             }
-            
-            while (firstPosition.getX() != getWidth()) {          
-            	firstPosition.pushRight();
-            	currentPosition = firstPosition;
-            	if (!checkCollision(firstPosition, activeTetris)) {                
-            		fillPentomino(firstPosition, activeTetris, 1);                             
-            		return;
-                }
-            }
-            JOptionPane.showMessageDialog(null, "Your score is: " + score, "Game Over", JOptionPane.WARNING_MESSAGE);
-            System.exit(0);
-            
-       // }
+        }
+        JOptionPane.showMessageDialog(null, "Your score is: " + highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
+        System.exit(0);
+
+        // }
     }
-    
+
     public static void main(String[] args) throws Exception {
 
         /* Set the size of the board here */
@@ -306,10 +300,9 @@ public class Board {
         int widthBoard = 5;
 
         /* create object board */
+
         Board board = new Board(widthBoard, heightBoard);
-        Board displayBoard = new Board(5, 5);
-
-
+        board.highscore.initHighscores();
         /***********************************/
         /* PUT ALL THE PENTOMINOS IN A MAP */
         /***********************************/
@@ -388,20 +381,12 @@ public class Board {
 
         /* Pentomino Visualisation */
         TetrisGUI grid = new TetrisGUI(board);
-        TetrisGUI displayGrid = new TetrisGUI(displayBoard);
         grid.setFocusable(true);
-        displayGrid.setFocusable(true);
         JFrame j = new JFrame();
-        JFrame displayJ = new JFrame();
         j.add(grid);
-        displayJ.add(displayGrid);
-        
         j.setSize(board.getWidth() * 50, board.getHeight() * 50);
-        displayJ.setSize(250, 250);
         j.setVisible(true);
-        displayJ.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        displayJ.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         FallingTimer timer = new FallingTimer(board, 2000);
         board.generateTetris();
@@ -410,13 +395,14 @@ public class Board {
 
         while (true) {
             grid.paintSquares();
-            displayBoard.setZeros();
-            displayBoard.fillPentomino(zero, futureTetris, 1);
-            displayGrid.paintSquares();
+            grid.setNextPentomino();
+            //displayBoard.setZeros();
+            //displayBoard.fillPentomino(zero, futureTetris, 1);
+            //displayGrid.paintSquares();
             /***********************************/
             /*  ADD FALLING PENTOMINO HERE!!!  */
             /***********************************/
-            
+
         }
     }
 

@@ -3,41 +3,39 @@ import java.util.TimerTask;
 import java.util.*;
 
 public class FallingTimer extends TimerTask {
-	Timer timer;
+    Timer timer;
     public int seconds;
-    
-    
-	public Board board;
-	
-	public FallingTimer(Board boardx, int x){
-		seconds = x;
-		board = boardx;
-		timer = new Timer();
-		timer.schedule(this , x);
-	}
-	
-	 public void run() {
-    	board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
-    	timer.cancel();
-    FallingTimer timer2;
-    int x = board.getScore();
+    public Board board;
 
-    	if ( x < 10 )
-    		 timer2= new FallingTimer(board, 3000) ;
-    	else if ( (10 <= x ) && (x< 20 ) )
-    		 timer2= new FallingTimer(board, 2500) ;
-    	else if ( (20 <= x) && (x < 30) )
-    		 timer2= new FallingTimer(board, 2000) ;
-    	 else if ( (30 <= x) && (x < 40) )
-    		 timer2= new FallingTimer(board, 1500) ;
-    	 else if ( (40 <= x) && (x < 50) )
-    		 timer2= new FallingTimer(board, 1000) ;
-    	 else 
-    		 timer2= new FallingTimer(board, 500) ;
-    	
-       }
+    public FallingTimer(Board board, int seconds) {
+        this.seconds = seconds;
+        this.board = board;
+        timer = new Timer();
+        timer.schedule(this, seconds);
+    }
+
+    public void run() {
+        FallingTimer timer2;
+        board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
+        timer.cancel();
+
+
+        if (board.highscore.getCurrentScore() < 10)
+            timer2 = new FallingTimer(board, 3000);
+        else if ((10 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 20))
+            timer2 = new FallingTimer(board, 2500);
+        else if ((20 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 30))
+            timer2 = new FallingTimer(board, 2000);
+        else if ((30 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 40))
+            timer2 = new FallingTimer(board, 1500);
+        else if ((40 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 50))
+            timer2 = new FallingTimer(board, 1000);
+        else
+            timer2 = new FallingTimer(board, 500);
+
+    }
 }
-	
+
 	
 	
 	

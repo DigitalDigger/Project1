@@ -7,11 +7,11 @@ public class CellValues {
         type = inType;
     }
 
-    public int getMatrixValue(){
+    public int getMatrixValue() {
         return this.matrixValue;
     }
 
-    public int getType(){
+    public int getType() {
         return this.type;
     }
 }

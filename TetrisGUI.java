@@ -70,7 +70,46 @@ public class TetrisGUI extends JPanel
         }
     }
 
+    public void setNextPentomino() {
+        if (squares == null)
+            initNextPentomino();
+        for (int i = 0; i < COLS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                if (board.getBoard().get(new Coordinate(i, j)).getType() == 0)
+                    squares[j][i].bgColor = this.darkOrange;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 1)
+                    squares[j][i].bgColor = this.darkBlue;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 2)
+                    squares[j][i].bgColor = this.darkBlack;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 3)
+                    squares[j][i].bgColor = this.lightBlack;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 4)
+                    squares[j][i].bgColor = this.manlyBlue;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 5)
+                    squares[j][i].bgColor = this.fragileMasculinity;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 6)
+                    squares[j][i].bgColor = this.Pinkie;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 7)
+                    squares[j][i].bgColor = this.Unicorn;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 8)
+                    squares[j][i].bgColor = Color.magenta;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 9)
+                    squares[j][i].bgColor = this.Pixie;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 10)
+                    squares[j][i].bgColor = this.Rainbow;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 11)
+                    squares[j][i].bgColor = this.newColor;
+                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 12)
+                    squares[j][i].bgColor = this.Hidden;
+
+                repaint();
+            }
+
+        }
+    }
+
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         if (squares == null)
             initSquares();
@@ -79,6 +118,11 @@ public class TetrisGUI extends JPanel
                 squares[j][i].draw(g2);
             }
         }
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        Font font = new Font("Serif", Font.PLAIN, 50);
+        g2.setFont(font);
+        g2.drawString("Your score is: " + board.highscore.getCurrentScore(), 300, 75);
     }
 
     private void initSquares() {
@@ -94,7 +138,25 @@ public class TetrisGUI extends JPanel
                 double x = j * xInc;
                 Rectangle2D.Double r =
                         new Rectangle2D.Double(x, y, xInc, yInc);
-                squares[i][j] = new SquareRx(i, j, r);
+                squares[i][j] = new SquareRx(r);
+            }
+        }
+    }
+
+    private void initNextPentomino() {
+        squares = new SquareRx[5][5];
+        int w = 5;
+        int h = 5;
+        double xInc = (double) (w) / COLS;
+        double yInc = (double) (h) / ROWS;
+
+        for (int i = 0; i < ROWS; i++) {
+            double y = i * yInc;
+            for (int j = 0; j < COLS; j++) {
+                double x = j * xInc;
+                Rectangle2D.Double r =
+                        new Rectangle2D.Double(x, y, xInc, yInc);
+                squares[i][j] = new SquareRx(r);
             }
         }
     }
@@ -118,7 +180,7 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_RIGHT) {
-            board.setCurrentPosition( board.moveRight(board.getCurrentPosition(), board.getActiveTetris()));
+            board.setCurrentPosition(board.moveRight(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
         if (key == KeyEvent.VK_UP) {
@@ -134,7 +196,7 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            board.setCurrentPosition( board.moveDown(board.getCurrentPosition(), board.getActiveTetris()));
+            board.setCurrentPosition(board.moveDown(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
         if (key == KeyEvent.VK_SPACE) {
@@ -145,15 +207,37 @@ public class TetrisGUI extends JPanel
                 previousPosition = currentPosition.clone();
                 currentPosition = board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
             }
+
             if (board.checkGameOver()) {
-                JOptionPane.showMessageDialog(null, "Your score is: " + board.getScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
+                System.out.println("game over");
+
+                board.highscore.addCurrentScore();
+                board.highscore.writeToHighscores();
+
+                if(board.highscore.getCurrentScore()> board.highscore.getHighscore(6)){
+                    if(board.highscore.getCurrentScore()==board.highscore.getHighscore(1)){
+                        JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + board.highscore.getCurrentScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
+                        }
+                    else {
+                        for(int i = 2; i<=5; i++){
+                            JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + board.highscore.getCurrentScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
+                                    break;
+                        }
+                    }
+
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + board.highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
+                }
+
+
                 System.exit(0);
             }
             board.checkAndRemoveFullLine();
 
             board.generateTetris();
 
-            board.printBoard();
+            // board.printBoard();
         }
 
         repaint();
@@ -174,7 +258,7 @@ class SquareRx {
     Color color = new Color(0, 0, 0);
     Color bgColor = Color.lightGray;
 
-    public SquareRx(int r, int c, Rectangle2D.Double rect) {
+    public SquareRx(Rectangle2D.Double rect) {
         this.rect = rect;
     }
 
