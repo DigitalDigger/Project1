@@ -109,7 +109,7 @@ public class TetrisGUI extends JPanel
     }
 
     public void paintComponent(Graphics g) {
-        Rectangle2D scoreRectangle = new Rectangle2D.Double(585,0,400,78);
+        Rectangle2D scoreRectangle = new Rectangle2D.Double(585,0,1000,1000);
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         if (squares == null)
@@ -128,6 +128,14 @@ public class TetrisGUI extends JPanel
         Font font = new Font("Serif", Font.PLAIN, 50);
         g2.setFont(font);
         g2.drawString("Your score is: " + board.highscore.getCurrentScore(), 620, 50);
+        g2.drawString("HighscoreList ", 620, 120);
+        Font font2 = new Font("Serif", Font.PLAIN, 32);
+        g2.setFont(font2);
+        g2.drawString("1. " + board.highscore.getHighscore(1), 720, 180);
+        g2.drawString("2. " + board.highscore.getHighscore(2), 720, 230);
+        g2.drawString("3. " + board.highscore.getHighscore(3), 720, 280);
+        g2.drawString("4. " + board.highscore.getHighscore(4), 720, 330);
+        g2.drawString("5. " + board.highscore.getHighscore(5), 720, 380);
 
     }
 
