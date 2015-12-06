@@ -1,9 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
-import javax.swing.JOptionPane;
 
 public class TetrisGUI extends JPanel
         implements KeyListener, Cloneable {
@@ -116,7 +115,7 @@ public class TetrisGUI extends JPanel
             initSquares();
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                if(squares!=null)
+                if(squares!=null && g2!=null)
                 squares[j][i].draw(g2);
             }
         }
@@ -195,6 +194,7 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_RIGHT) {
+
             board.setCurrentPosition(board.moveRight(board.getCurrentPosition(), board.getActiveTetris()));
         }
 
@@ -215,43 +215,7 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_SPACE) {
-            Coordinate currentPosition = board.getCurrentPosition().clone();
-            Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
-
-            while (previousPosition.getY() != currentPosition.getY()) {
-                previousPosition = currentPosition.clone();
-                currentPosition = board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
-            }
-            board.checkAndRemoveFullLine();
-            if (board.checkGameOver()) {
-                board.highscore.addCurrentScore();
-                board.highscore.writeToHighscores();
-                System.out.println("game over");
-
-                if(board.highscore.getCurrentScore()> board.highscore.getHighscore(6)){
-                    if(board.highscore.getCurrentScore()==board.highscore.getHighscore(1)){
-                        JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + board.highscore.getCurrentScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
-                        }
-                    else {
-                        for(int i = 2; i<=5; i++){
-                            JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + board.highscore.getCurrentScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
-                                    break;
-                        }
-                    }
-
-                }
-                else{
-                    JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + board.highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
-                }
-
-
-                System.exit(0);
-            }
-
-
-            board.generateTetris();
-
-            // board.printBoard();
+            board.dropDown();
         }
 
         repaint();

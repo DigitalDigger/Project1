@@ -1,9 +1,9 @@
 import javax.swing.*;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
+
+
 
 
 public class Board extends Highscore {
@@ -15,8 +15,8 @@ public class Board extends Highscore {
     private static Tetris futureTetris;
     private HashMap<Tetris, ArrayList<Tetris>> pentominos;
     private int pentoCheck = 0;
+    public boolean gameOver=false;
     public Highscore highscore = new Highscore("anthony");
-
     public Tetris getActiveTetris() {
         return activeTetris;
     }
@@ -60,11 +60,6 @@ public class Board extends Highscore {
         }
     }
 
-    public int calculateScore(int currentScore, int lines) {
-        int score;
-        score = currentScore + (int) Math.pow(3, lines);
-        return score;
-    }
 
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
 
@@ -110,22 +105,8 @@ public class Board extends Highscore {
             }
         }
         highscore.calculateScore(fullLinesCounter);
-        //score = calculateScore(score, fullLinesCounter);
         System.out.println(fullLinesCounter + " Full line detected");
         System.out.println("Your score is now: " + highscore.getCurrentScore());
-    }
-
-    public boolean checkGameOver() {
-        boolean gameOver = false;
-        for (int b = 0; b < getWidth(); b++) {
-            if (board.get(new Coordinate(b, 0)).getMatrixValue() == 1) {
-                gameOver = true;
-                System.out.println("GAME OVER YOUR");
-                System.out.println("YOUR SCORE IS: " + highscore.getCurrentScore());
-                break;
-            }
-        }
-        return gameOver;
     }
 
     public void removeFullLine(int lineNumber) {
@@ -237,14 +218,56 @@ public class Board extends Highscore {
     }
 
     public Coordinate moveDown(Coordinate curCoord, Tetris curPento) {
-        removePentomino(curCoord, curPento);
-        curCoord.setY(curCoord.getY() + 1);
-        if (checkCollision(curCoord, curPento))
-            curCoord.setY(curCoord.getY() - 1);
-        fillPentomino(curCoord, curPento, 1);
-        // printBoard();
+        if (checkCollision(curCoord, curPento)) {
+            removePentomino(curCoord, curPento);
+            curCoord.setY(curCoord.getY() + 1);
+            if (checkCollision(curCoord, curPento))
+                curCoord.setY(curCoord.getY() - 1);
 
-        return new Coordinate(curCoord.getX(), curCoord.getY());
+            fillPentomino(curCoord, curPento, 1);
+        }
+            return new Coordinate(curCoord.getX(), curCoord.getY());
+
+    }
+    public void dropDown(){
+        Coordinate currentPosition = getCurrentPosition().clone();
+        Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
+
+        while (previousPosition.getY() != currentPosition.getY()) {
+            previousPosition = currentPosition.clone();
+            currentPosition = moveDown(getCurrentPosition(), getActiveTetris());
+        }
+        checkAndRemoveFullLine();
+        generateTetris();
+        if (gameOver) {
+            highscore.addCurrentScore();
+            highscore.writeToHighscores();
+            System.out.println("game over");
+
+            if(highscore.getCurrentScore()> highscore.getHighscore(6)){
+                if(highscore.getCurrentScore()==highscore.getHighscore(1)){
+                    JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + highscore.getCurrentScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    for(int i = 2; i<=5; i++){
+                        JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + highscore.getCurrentScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
+                        break;
+                    }
+                }
+
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
+            }
+
+
+            System.exit(0);
+        }
+
+
+
+
+        // board.printBoard();
     }
 
     public void generateTetris() {
@@ -268,6 +291,7 @@ public class Board extends Highscore {
             return;
         }
 
+
         while (firstPosition.getX() != 0) {
             firstPosition.pushLeft();
             currentPosition = firstPosition;
@@ -284,6 +308,11 @@ public class Board extends Highscore {
                 fillPentomino(firstPosition, activeTetris, 1);
                 return;
             }
+        }
+        if(checkCollision(firstPosition, activeTetris)) {
+            System.out.println("Game Over");
+            gameOver = true;
+
         }
         // }
     }
