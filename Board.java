@@ -17,9 +17,13 @@ public class Board extends Highscore {
     private int pentoCheck = 0;
     public boolean gameOver=false;
     public Highscore highscore = new Highscore("anthony");
+    FallingTimer FallingEvent = new FallingTimer(this, 2000);
+    DropEvent DroppingEvent = new DropEvent(this,10);
+
     public Tetris getActiveTetris() {
         return activeTetris;
     }
+    public boolean dropIt = false;
 
     public Tetris setActiveTetris(Tetris newTetris) {
         activeTetris = newTetris;
@@ -105,8 +109,8 @@ public class Board extends Highscore {
             }
         }
         highscore.calculateScore(fullLinesCounter);
-        System.out.println(fullLinesCounter + " Full line detected");
-        System.out.println("Your score is now: " + highscore.getCurrentScore());
+       // System.out.println(fullLinesCounter + " Full line detected");
+        //System.out.println("Your score is now: " + highscore.getCurrentScore());
     }
 
     public void removeFullLine(int lineNumber) {
@@ -217,14 +221,22 @@ public class Board extends Highscore {
         return new Coordinate(curCoord.getX(), curCoord.getY());
     }
 
-    public Coordinate moveDown(Coordinate curCoord, Tetris curPento) {
+    public Coordinate moveDown(Coordinate curCoord, Tetris curPento, boolean spacePressed) {
+        checkGameOver();
         if (checkCollision(curCoord, curPento)) {
             removePentomino(curCoord, curPento);
             curCoord.setY(curCoord.getY() + 1);
-            if (checkCollision(curCoord, curPento))
+            printBoard();
+            if (checkCollision(curCoord, curPento)){
                 curCoord.setY(curCoord.getY() - 1);
+                fillPentomino(curCoord, curPento, 1);
+                if(!spacePressed)
+                dropIt = true;
+            }
+            else{
+                fillPentomino(curCoord, curPento, 1);
+            }
 
-            fillPentomino(curCoord, curPento, 1);
         }
             return new Coordinate(curCoord.getX(), curCoord.getY());
 
@@ -235,15 +247,20 @@ public class Board extends Highscore {
 
         while (previousPosition.getY() != currentPosition.getY()) {
             previousPosition = currentPosition.clone();
-            currentPosition = moveDown(getCurrentPosition(), getActiveTetris());
+            currentPosition = moveDown(getCurrentPosition(), getActiveTetris(),true);
         }
         checkAndRemoveFullLine();
         generateTetris();
+        checkGameOver();
+
+        // board.printBoard();
+    }
+    public void checkGameOver() {
         if (gameOver) {
+            FallingEvent.cancel();
+            DroppingEvent.cancel();
             highscore.addCurrentScore();
             highscore.writeToHighscores();
-            System.out.println("game over");
-
             if(highscore.getCurrentScore()> highscore.getHighscore(6)){
                 if(highscore.getCurrentScore()==highscore.getHighscore(1)){
                     JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + highscore.getCurrentScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
@@ -263,11 +280,6 @@ public class Board extends Highscore {
 
             System.exit(0);
         }
-
-
-
-
-        // board.printBoard();
     }
 
     public void generateTetris() {
@@ -413,7 +425,7 @@ public class Board extends Highscore {
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        FallingTimer timer = new FallingTimer(board, 2000);
+
         board.generateTetris();
         Coordinate zero = new Coordinate(0, 0);
 

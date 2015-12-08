@@ -211,7 +211,7 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_DOWN) {
-            board.setCurrentPosition(board.moveDown(board.getCurrentPosition(), board.getActiveTetris()));
+            board.setCurrentPosition(board.moveDown(board.getCurrentPosition(), board.getActiveTetris(), false));
         }
 
         if (key == KeyEvent.VK_SPACE) {

@@ -16,9 +16,11 @@ public class FallingTimer extends TimerTask {
 
     public void run() {
         FallingTimer timer2;
-        board.moveDown(board.getCurrentPosition(), board.getActiveTetris());
-        timer.cancel();
+        if(!board.dropIt)
+        board.moveDown(board.getCurrentPosition(), board.getActiveTetris(), false);
 
+
+        timer.cancel();
 
         if (board.highscore.getCurrentScore() < 10)
             timer2 = new FallingTimer(board, 3000);
@@ -32,6 +34,7 @@ public class FallingTimer extends TimerTask {
             timer2 = new FallingTimer(board, 1000);
         else
             timer2 = new FallingTimer(board, 500);
+
 
     }
 }

@@ -25,7 +25,14 @@ public class Highscore {
 
     public void calculateScore(int lines) {
         if (lines != 0)
-            currentScore += (int) Math.pow(3, lines);
+            if(lines==1){
+                currentScore+=1;
+            }
+        else {
+                currentScore += (int) Math.pow(2, lines-1);
+            }
+
+
     }
 
     public void initHighscores() {
