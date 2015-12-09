@@ -9,6 +9,7 @@ public class TetrisGUI extends JPanel
     private int ROWS;
     private int COLS;
     private Board board;
+    private FuturePentominoBoard futurePentominoBoard;
     private Color darkOrange = new Color(241, 238, 244);
     private Color newColor = new Color(128, 183, 180);
     private Color darkBlue = new Color(188, 133, 250);
@@ -21,6 +22,7 @@ public class TetrisGUI extends JPanel
     private Color Rainbow = new Color(182, 7, 107);
     private Color Unicorn = new Color(192, 101, 158);
     private Color Hidden = new Color(12, 101, 158);
+    private int counter=0;
 
     public TetrisGUI(Board inBoard) {
         board = inBoard;
@@ -69,56 +71,72 @@ public class TetrisGUI extends JPanel
             }
         }
     }
-
-    public void setNextPentomino() {
-        if (squares == null)
+     public void paintFuturePentomino() {
+        if (squaresNextPentomino == null)
             initNextPentomino();
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                if (board.getBoard().get(new Coordinate(i, j)).getType() == 0)
-                    squares[j][i].bgColor = this.darkOrange;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 1)
-                    squares[j][i].bgColor = this.darkBlue;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 2)
-                    squares[j][i].bgColor = this.darkBlack;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 3)
+                if(futurePentominoBoard==null){
+                    counter++;
+                    //System.out.println(counter);
+                    break;
+                }
+
+                if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 0)
+                    squaresNextPentomino[j][i].bgColor = this.darkOrange;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 1)
+                    squaresNextPentomino[j][i].bgColor = this.darkBlue;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 2)
+                    squaresNextPentomino[j][i].bgColor = this.darkBlack;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 3)
                     squares[j][i].bgColor = this.lightBlack;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 4)
-                    squares[j][i].bgColor = this.manlyBlue;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 5)
-                    squares[j][i].bgColor = this.fragileMasculinity;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 6)
-                    squares[j][i].bgColor = this.Pinkie;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 7)
-                    squares[j][i].bgColor = this.Unicorn;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 8)
-                    squares[j][i].bgColor = Color.magenta;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 9)
-                    squares[j][i].bgColor = this.Pixie;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 10)
-                    squares[j][i].bgColor = this.Rainbow;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 11)
-                    squares[j][i].bgColor = this.newColor;
-                else if (board.getBoard().get(new Coordinate(i, j)).getType() == 12)
-                    squares[j][i].bgColor = this.Hidden;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 4)
+                    squaresNextPentomino[j][i].bgColor = this.manlyBlue;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 5)
+                    squaresNextPentomino[j][i].bgColor = this.fragileMasculinity;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 6)
+                    squaresNextPentomino[j][i].bgColor = this.Pinkie;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 7)
+                    squaresNextPentomino[j][i].bgColor = this.Unicorn;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 8)
+                    squaresNextPentomino[j][i].bgColor = Color.magenta;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 9)
+                    squaresNextPentomino[j][i].bgColor = this.Pixie;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 10)
+                    squaresNextPentomino[j][i].bgColor = this.Rainbow;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 11)
+                    squaresNextPentomino[j][i].bgColor = this.newColor;
+                else if (futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 12)
+                    squaresNextPentomino[j][i].bgColor = this.Hidden;
 
                 repaint();
             }
-
         }
     }
+
 
     public void paintComponent(Graphics g) {
         Rectangle2D scoreRectangle = new Rectangle2D.Double(585,0,1000,1000);
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
         if (squares == null)
             initSquares();
+
+        if(squaresNextPentomino == null)
+            initNextPentomino();
 
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 if(squares!=null && g2!=null)
                 squares[j][i].draw(g2);
+            }
+        }
+
+        for (int i = 0; i < COLS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                if(squaresNextPentomino!=null && g2!=null)
+                    squaresNextPentomino[j][i].draw(g2);
             }
         }
 
@@ -164,9 +182,9 @@ public class TetrisGUI extends JPanel
     }
 
     private void initNextPentomino() {
-        squaresNextPentomino = new SquareRx[5][5];
-        int w = 5;
-        int h = 5;
+        squaresNextPentomino = new SquareRx[12][12];
+        int w = 5 - 1000;
+        int h = 5 ;
         double xInc = (double) (w) / COLS;
         double yInc = (double) (h) / ROWS;
 
@@ -176,7 +194,7 @@ public class TetrisGUI extends JPanel
                 double x = j * xInc;
                 Rectangle2D.Double r =
                         new Rectangle2D.Double(x, y, xInc, yInc);
-                squares[i][j] = new SquareRx(r);
+                squaresNextPentomino[i][j] = new SquareRx(r);
             }
         }
     }

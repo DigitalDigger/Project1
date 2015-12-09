@@ -14,6 +14,7 @@ public class Board extends Highscore {
     private int width = 0;
     private int height = 0;
     private Coordinate currentPosition;
+    private Coordinate currentFuturePosition;
     private static Tetris activeTetris;
     private static Tetris futureTetris;
     private HashMap<Tetris, ArrayList<Tetris>> pentominos;
@@ -22,6 +23,7 @@ public class Board extends Highscore {
     private JTextField nameGetter;
     public boolean gameOver=false;
     public Highscore highscore = new Highscore();
+    public FuturePentominoBoard futurePentominoBoard = new FuturePentominoBoard(5,5);
     FallingTimer FallingEvent = new FallingTimer(this, 2000);
     DropEvent DroppingEvent = new DropEvent(this,10);
 
@@ -162,8 +164,20 @@ public class Board extends Highscore {
         }
         System.out.println();
     }
+    public void printFuturePentomino() {
+        String futurePentominoArray = futureTetris.toString();
+        System.out.println(futurePentominoArray);
+        //Method to print the pentominoes
+        for (int a = 0; a < getHeight(); a++) {
+            for (int b = 0; b < getWidth(); b++) {
+                //System.out.print(futurePentominoBoard.get(new Coordinate(b, a)).getMatrixValue() + "  ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 
-    public void fillPentomino(Coordinate cell, Tetris curTetris, int toAdd) {
+    public void  fillPentomino(Coordinate cell, Tetris curTetris, int toAdd) {
 
         for (Coordinate curCoord : curTetris.getCoords()) {
 
@@ -232,7 +246,7 @@ public class Board extends Highscore {
         if (checkCollision(curCoord, curPento)) {
             removePentomino(curCoord, curPento);
             curCoord.setY(curCoord.getY() + 1);
-            printBoard();
+            //printBoard();
             if (checkCollision(curCoord, curPento)){
                 curCoord.setY(curCoord.getY() - 1);
                 fillPentomino(curCoord, curPento, 1);
@@ -320,19 +334,66 @@ public class Board extends Highscore {
     public void generateTetris() {
         Coordinate firstPosition = new Coordinate((getWidth() / 2), 0);
         currentPosition = firstPosition;
+        Coordinate futurePentominoPosition = new Coordinate((getWidth() / 2), 0);
+        currentFuturePosition = futurePentominoPosition;
+        System.out.println("INITIAL POSITION   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
 
+            /*
+        while (futurePentominoPosition.getX() != 0) {
+            futurePentominoPosition.pushLeft();
+            System.out.println("TO THE LEFT   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
+            currentFuturePosition = futurePentominoPosition;
+
+        }
+
+        while (futurePentominoPosition.getX() != getWidth()) {
+            futurePentominoPosition.pushRight();
+            System.out.println("TO THE RIGHT   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
+            currentFuturePosition = futurePentominoPosition;
+
+        }
+        */
+        System.out.println("FINAL   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
         if (pentoCheck == 0) {
+            Tetris aTetris = generatePentomino(pentominos);
             Tetris fTetris = generatePentomino(pentominos);
             futureTetris = fTetris;
+            activeTetris = aTetris;
             pentoCheck++;
         }
-        activeTetris = futureTetris;
+        else {
+            activeTetris=futureTetris;
+            Tetris fTetris = generatePentomino(pentominos);
+            futureTetris = fTetris;
+            futurePentominoBoard.setZeros();
+            //futurePentominoBoard.removePentomino(futurePentominoPosition,activeTetris);
+        }
+        if(futureTetris.getType()==1){
+            futurePentominoPosition.pushLeft();
+            futurePentominoPosition.pushLeft();
+        }
+        if(futureTetris.getType()==3){
+            futurePentominoPosition.pushLeft();
+        }
+        if(futureTetris.getType()==2){
+            futurePentominoPosition.pushLeft();
+        }
+        if(futureTetris.getType()==10){
+            futurePentominoPosition.pushLeft();
+        }
+        futurePentominoBoard.fillPentomino(futurePentominoPosition, futureTetris, 1);
+
+
+
 
         //while (true) {
-        Tetris tetris = generatePentomino(pentominos);
+        //Tetris tetris = generatePentomino(pentominos);
 
-        futureTetris = tetris;
 
+       // futurePentominoBoard.removePentomino(firstPosition,activeTetris);
+        futurePentominoBoard.printBoard();
+        //futureTetris = tetris;
+        //printFuturePentomino();
         if (!checkCollision(firstPosition, activeTetris)) {
             fillPentomino(firstPosition, activeTetris, 1);
             return;
@@ -452,10 +513,13 @@ public class Board extends Highscore {
 
         /* Pentomino Visualisation */
         TetrisGUI grid = new TetrisGUI(board);
+
         grid.setFocusable(true);
+
         JFrame j = new JFrame();
-        j.setResizable(false);
+        //j.setResizable(false);
         j.add(grid);
+
         j.setSize(board.getWidth() * 120 + 400, board.getHeight() * 80);
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -464,17 +528,15 @@ public class Board extends Highscore {
         board.generateTetris();
         Coordinate zero = new Coordinate(0, 0);
 
-
-        while (true) {
+        while(true)
+        {
+            // Improve processor load
+            long starttime = System.currentTimeMillis();
+            while(System.currentTimeMillis()-starttime < 50)
+            {
+            }
             grid.paintSquares();
-            grid.setNextPentomino();
-            //displayBoard.setZeros();
-            //displayBoard.fillPentomino(zero, futureTetris, 1);
-            //displayGrid.paintSquares();
-            /***********************************/
-            /*  ADD FALLING PENTOMINO HERE!!!  */
-            /***********************************/
-
+            grid.paintFuturePentomino();
         }
     }
 
