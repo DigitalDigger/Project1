@@ -16,21 +16,21 @@ public class FallingTimer extends TimerTask {
 
     public void run() {
         FallingTimer timer2;
-        if(!board.dropIt)
+        if(!board.dropIt && !board.gameOver)
         board.moveDown(board.getCurrentPosition(), board.getActiveTetris(), false);
 
 
         timer.cancel();
 
-        if (board.highscore.getCurrentScore() < 10)
+        if (board.highscore.getScore() < 10)
             timer2 = new FallingTimer(board, 3000);
-        else if ((10 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 20))
+        else if ((10 <= board.highscore.getScore()) && (board.highscore.getScore() < 20))
             timer2 = new FallingTimer(board, 2500);
-        else if ((20 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 30))
+        else if ((20 <= board.highscore.getScore()) && (board.highscore.getScore() < 30))
             timer2 = new FallingTimer(board, 2000);
-        else if ((30 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 40))
+        else if ((30 <= board.highscore.getScore()) && (board.highscore.getScore() < 40))
             timer2 = new FallingTimer(board, 1500);
-        else if ((40 <= board.highscore.getCurrentScore()) && (board.highscore.getCurrentScore() < 50))
+        else if ((40 <= board.highscore.getScore()) && (board.highscore.getScore() < 50))
             timer2 = new FallingTimer(board, 1000);
         else
             timer2 = new FallingTimer(board, 500);

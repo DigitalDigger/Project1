@@ -126,15 +126,18 @@ public class TetrisGUI extends JPanel
         g2.setColor(Color.white);
         Font font = new Font("Serif", Font.PLAIN, 50);
         g2.setFont(font);
-        g2.drawString("Your score is: " + board.highscore.getCurrentScore(), 620, 50);
+        g2.drawString("Your score is: " + board.highscore.getScore(), 620, 50);
         g2.drawString("HighscoreList ", 620, 120);
         Font font2 = new Font("Serif", Font.PLAIN, 32);
         g2.setFont(font2);
-        g2.drawString("1. " + board.highscore.getHighscore(1), 720, 180);
-        g2.drawString("2. " + board.highscore.getHighscore(2), 720, 230);
-        g2.drawString("3. " + board.highscore.getHighscore(3), 720, 280);
-        g2.drawString("4. " + board.highscore.getHighscore(4), 720, 330);
-        g2.drawString("5. " + board.highscore.getHighscore(5), 720, 380);
+
+//System.out.println(board.newScore.getScores().get(0).toString().replaceAll("[\\n\\t ]", " "));
+        g2.drawString("1. " + board.highscore.getHighscoreByRank(1), 650, 180);
+        g2.drawString("2. " + board.highscore.getHighscoreByRank(2), 650, 230);
+        g2.drawString("3. " + board.highscore.getHighscoreByRank(3), 650, 280);
+        g2.drawString("4. " + board.highscore.getHighscoreByRank(4), 650, 330);
+        g2.drawString("5. " + board.highscore.getHighscoreByRank(5), 650, 380);
+
 
     }
 

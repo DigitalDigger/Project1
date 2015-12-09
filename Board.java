@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +18,10 @@ public class Board extends Highscore {
     private static Tetris futureTetris;
     private HashMap<Tetris, ArrayList<Tetris>> pentominos;
     private int pentoCheck = 0;
+    private JFrame gameOverFrame;
+    private JTextField nameGetter;
     public boolean gameOver=false;
-    public Highscore highscore = new Highscore("anthony");
+    public Highscore highscore = new Highscore();
     FallingTimer FallingEvent = new FallingTimer(this, 2000);
     DropEvent DroppingEvent = new DropEvent(this,10);
 
@@ -222,6 +227,7 @@ public class Board extends Highscore {
     }
 
     public Coordinate moveDown(Coordinate curCoord, Tetris curPento, boolean spacePressed) {
+        if(!gameOver);
         checkGameOver();
         if (checkCollision(curCoord, curPento)) {
             removePentomino(curCoord, curPento);
@@ -252,35 +258,62 @@ public class Board extends Highscore {
         checkAndRemoveFullLine();
         generateTetris();
         checkGameOver();
-
         // board.printBoard();
     }
     public void checkGameOver() {
         if (gameOver) {
+            System.out.println("game over");
             FallingEvent.cancel();
             DroppingEvent.cancel();
-            highscore.addCurrentScore();
-            highscore.writeToHighscores();
-            if(highscore.getCurrentScore()> highscore.getHighscore(6)){
-                if(highscore.getCurrentScore()==highscore.getHighscore(1)){
-                    JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + highscore.getCurrentScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
+
+            gameOverFrame = new JFrame("Game Over!");
+            gameOverFrame.setLocationRelativeTo(null);
+            gameOverFrame.setResizable(false);
+            JPanel gameOverPanel = new JPanel(new FlowLayout());
+            nameGetter = new JTextField(12);
+            JButton gameOverButton = new JButton("Submit");
+            GameOverListener listener = new GameOverListener();
+            gameOverButton.addActionListener(listener);
+            gameOverPanel.add(nameGetter);
+            gameOverPanel.add(gameOverButton);
+            gameOverFrame.add(gameOverPanel);
+            gameOverFrame.pack();
+            gameOverFrame.setVisible(true);
+
+        }
+    }
+
+    class GameOverListener implements ActionListener {
+        public void actionPerformed(ActionEvent e){
+            String name = nameGetter.getText();
+            int score = highscore.getScore();
+            gameOverFrame.dispose();
+            Highscore newScore = new Highscore(score, name);
+            newScore.read();
+            newScore.add(newScore);
+            newScore.sortList();
+            newScore.write();
+
+            if(highscore.getScore()> highscore.getHighscoreNumberByRank(6)){
+                if(highscore.getScore()==highscore.getHighscoreNumberByRank(1)){
+                    JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + highscore.getScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     for(int i = 2; i<=5; i++){
-                        JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + highscore.getCurrentScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + highscore.getScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
                         break;
                     }
                 }
 
             }
             else{
-                JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + highscore.getCurrentScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + highscore.getScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
             }
 
 
             System.exit(0);
         }
-    }
+        }
 
     public void generateTetris() {
         Coordinate firstPosition = new Coordinate((getWidth() / 2), 0);
@@ -338,7 +371,7 @@ public class Board extends Highscore {
         /* create object board */
 
         Board board = new Board(widthBoard, heightBoard);
-        board.highscore.initHighscores();
+
         /***********************************/
         /* PUT ALL THE PENTOMINOS IN A MAP */
         /***********************************/
@@ -425,7 +458,7 @@ public class Board extends Highscore {
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
+        board.highscore.init();
         board.generateTetris();
         Coordinate zero = new Coordinate(0, 0);
 

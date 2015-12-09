@@ -1,162 +1,144 @@
-import java.io.*;
-import java.util.Arrays;
+import java.io.BufferedWriter;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
 
-public class Highscore {
-    private int[] highscoreList = new int[6];
-    private int currentScore;
-    private String highscoreFile = "highscore.txt";
+
+public class Highscore implements Serializable {
+    private int score;
     private String name;
+    private ArrayList<Highscore> scores = new ArrayList<Highscore>();
+    private String highscoreFile = "highscore.txt";
+
+    Comparator<Highscore> scoresCompare = new Comparator<Highscore>() {
+        @Override
+        public int compare(Highscore one, Highscore two) {
+            if (one.getScore() < two.getScore())
+                return 1;
+            else
+                return -1;
+        }
+    };
 
     public Highscore() {
-    }
-    public Highscore(String name) {
-        highscoreList = readHighscoreFile();
-        currentScore = 0;
-        this.name = name;
+
     }
 
-    public int getHighscore(int rank) {
-        return this.highscoreList[rank - 1];
+    public Highscore(int aScore, String aName) {
+        score = aScore;
+        name = aName;
     }
 
-    public int[] getHighscoreList() {
-        return this.highscoreList;
+    public void add(Highscore s) {
+        scores.add(s);
+    }
+
+    public void sortList() {
+        Collections.sort(scores, scoresCompare);
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void init(){
+        this.read();
     }
 
     public void calculateScore(int lines) {
         if (lines != 0)
-            if(lines==1){
-                currentScore+=1;
+            if (lines == 1) {
+                score += 1;
+            } else {
+                score += (int) Math.pow(2, lines - 1);
             }
-        else {
-                currentScore += (int) Math.pow(2, lines-1);
+    }
+
+    public void write() {
+        try {
+            FileWriter fw = new FileWriter(highscoreFile);
+            BufferedWriter output = new BufferedWriter(fw);
+            int sz = scores.size();
+            for (int i = 0; i < sz; i++) {
+                output.write(scores.get(i).toString());
+                output.newLine();
             }
-
-
-    }
-
-    public void initHighscores() {
-        readHighscoreFile();
-        sortHighscore();
-    }
-
-    public int getCurrentScore() {
-        return currentScore;
-    }
-
-    public void sortHighscore() {
-
-        Arrays.sort(highscoreList);
-
-        /* Sort the highscores from high a score to a low score */
-        for (int k = 0; k < highscoreList.length / 2; k++) {
-            int temp = highscoreList[k];
-            highscoreList[k] = highscoreList[highscoreList.length - k - 1];
-            highscoreList[highscoreList.length - k - 1] = temp;
+            output.close();
+        } catch (IOException e) {
+            e.getStackTrace();
         }
     }
 
-    public int[] readHighscoreFile() {
-        int[] highscore = new int[6];
-        // This will reference one line at a time
-        String line = null;
-        File file = new File(highscoreFile);
-        try {
+    public void reset() {
+        scores = new ArrayList<Highscore>();
+    }
 
-            int i = 0;
-
-            if (!file.isFile()) {
-                file.createNewFile();
-            }
-            // FileReader reads text files in the default encoding.
-            FileReader fileReader =
-                    new FileReader(highscoreFile);
-
-            // Always wrap FileReader in BufferedReader.
-            BufferedReader bufferedReader =
-                    new BufferedReader(fileReader);
-
-            while ((line = bufferedReader.readLine()) != null && i < 5) {
-                int score = 0;
-                try {
-                    score = Integer.parseInt(line);
-                } catch (NumberFormatException e) {
+    public void read() {
+            try {
+                Scanner in = new Scanner(new File(highscoreFile));
+                while (in.hasNextLine()) {
+                    while (in.hasNext()) {
+                        //System.out.println("Got this far");
+                        String aName = in.next();
+                        int aScore = in.nextInt();
+                            scores.add(new Highscore(aScore, aName));
+                        in.nextLine();
+                    }
                 }
-
-                highscore[i] = score;
-                i++;
+            } catch (FileNotFoundException e) {
+                //System.out.println("You dun goofed.");
             }
+    }
 
+    public String toString() {
+        return getName() + "\t" + "\t" + getScore();
+    }
 
-            // Always close files.
-            bufferedReader.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println(
-                    "Unable to open file '" +
-                            highscoreFile + "'");
-        } catch (IOException ex) {
+    public void newArrayList() {
+        scores = new ArrayList<Highscore>();
+    }
 
-            ex.printStackTrace();
+    public ArrayList<Highscore> getScores() {
+        return scores;
+    }
+
+    public void saveScore(Highscore s) throws ClassNotFoundException, IOException, EOFException, FileNotFoundException {
+        scores.add(s);
+        Collections.sort(scores, scoresCompare);
+        write();
+    }
+
+    public String getHighscoreByRank(int rank) {
+
+        String scoreString;
+        if (this.getScores().toArray().length > 0 && rank - 1 < this.getScores().toArray().length) {
+            scoreString = getScores().get(rank - 1).toString().replaceAll("[\\n\\t ]", " ");
         }
-        return highscore;
+        else {
+            scoreString = "Empty";
+        }
+        return scoreString;
     }
-
-    public void addCurrentScore() {
-        highscoreList[5] = currentScore;
-        sortHighscore();
-    }
-
-    public void writeToHighscores() {
-        System.out.println("testing write");
-        try {
-            // input the file content to the String "input"
-            String input = "";
-
-            for (int i = 1; i <= 5; i++) {
-                input += getHighscore(i) + System.getProperty("line.separator");
+    public int getHighscoreNumberByRank(int rank){
+        int scoreNumberByRank=0;
+        if (this.getScores().toArray().length > 0 && rank - 1 < this.getScores().toArray().length) {
+            scoreNumberByRank=getScores().get(rank-1).getScore();
             }
-            // write the new String with the replaced line OVER the same file
-            new File(highscoreFile).mkdirs();
-            FileOutputStream fileOut = new FileOutputStream(highscoreFile);
-            fileOut.write(input.getBytes());
-            fileOut.close();
-
-        } catch (Exception e) {
-            System.out.println("Problem reading file. " + highscoreFile);
-            System.out.println(e);
-        }
-    }
-
-    public void writeToHighscores2() {
-
-        try {
-            // Assume default encoding.
-            FileWriter fileWriter =
-                    new FileWriter(highscoreFile);
-
-            // Always wrap FileWriter in BufferedWriter.
-            BufferedWriter bufferedWriter =
-                    new BufferedWriter(fileWriter);
-
-            // Note that write() does not automatically
-            // append a newline character.
-            //for(int i=1; i<=5; i++) {
-            bufferedWriter.write(getHighscore(1));
-            //bufferedWriter.newLine();
-            // }
-
-
-            // Always close files.
-            bufferedWriter.close();
-
-        } catch (IOException ex) {
-            System.out.println(
-                    "Error writing to file '"
-                            + highscoreFile + "'");
-            // Or we could just do this:
-            // ex.printStackTrace();
-        }
-
+        return scoreNumberByRank;
     }
 
 }
+
+    /*
+
+    */
