@@ -30,6 +30,7 @@ public class TetrisGUI extends JPanel
         addKeyListener(this);
     }
 
+    SquareRx[][] squaresNextPentomino;
     SquareRx[][] squares;
 
     public void paintSquares() {
@@ -113,12 +114,14 @@ public class TetrisGUI extends JPanel
         Graphics2D g2 = (Graphics2D) g;
         if (squares == null)
             initSquares();
+
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 if(squares!=null && g2!=null)
                 squares[j][i].draw(g2);
             }
         }
+
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(Color.DARK_GRAY);
@@ -161,7 +164,7 @@ public class TetrisGUI extends JPanel
     }
 
     private void initNextPentomino() {
-        squares = new SquareRx[5][5];
+        squaresNextPentomino = new SquareRx[5][5];
         int w = 5;
         int h = 5;
         double xInc = (double) (w) / COLS;

@@ -294,14 +294,16 @@ public class Board extends Highscore {
             newScore.sortList();
             newScore.write();
 
-            if(highscore.getScore()> highscore.getHighscoreNumberByRank(6)){
-                if(highscore.getScore()==highscore.getHighscoreNumberByRank(1)){
+            if(highscore.getScore()>= highscore.getHighscoreNumberByRank(6)){
+                if(highscore.getScore()>=highscore.getHighscoreNumberByRank(1)){
                     JOptionPane.showMessageDialog(null, "New Highscore! 1st Place! Your score is: " + highscore.getScore(), "1st Place!", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
                     for(int i = 2; i<=5; i++){
-                        JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + highscore.getScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
-                        break;
+                        if(highscore.getScore()>=highscore.getHighscoreNumberByRank(i)) {
+                            JOptionPane.showMessageDialog(null, "New Highscore! " + i + "th Place! Your score is: " + highscore.getScore(), "New Highscore", JOptionPane.WARNING_MESSAGE);
+                            break;
+                        }
                     }
                 }
 
