@@ -434,6 +434,7 @@ public class Board extends Highscore {
         /* create object board */
 
         Board board = new Board(widthBoard, heightBoard);
+        FuturePentominoBoard fBoard = new FuturePentominoBoard(5,5);
 
         /***********************************/
         /* PUT ALL THE PENTOMINOS IN A MAP */
@@ -512,7 +513,7 @@ public class Board extends Highscore {
 
 
         /* Pentomino Visualisation */
-        TetrisGUI grid = new TetrisGUI(board);
+        TetrisGUI grid = new TetrisGUI(board,fBoard);
 
         grid.setFocusable(true);
 
@@ -532,8 +533,7 @@ public class Board extends Highscore {
         {
             // Improve processor load
             long starttime = System.currentTimeMillis();
-            while(System.currentTimeMillis()-starttime < 50)
-            {
+            while(System.currentTimeMillis()-starttime < 50) {
             }
             grid.paintSquares();
             grid.paintFuturePentomino();
