@@ -26,16 +26,20 @@ public class Board extends Highscore {
     public FuturePentominoBoard futurePentominoBoard = new FuturePentominoBoard(5,5);
     private String name="";
 
+
+    /* BOT PARAMETERS */
     public boolean boardToCurrentPosition=false;
     public boolean botEnabled = true;
     public boolean botDropIt = false;
-    public int[][] botArray = new int[20][3];
+    public int[][] botArray = new int[5*4][3]; //CHANGE THE 5 TO THE AMOUNT OF COLUMNS ON THE BOARD (WIDTH OF THE BOARD!!!!) for some reason getwidth method doesn't work
+
     FallingTimer FallingEvent = new FallingTimer(this, 2000);
     DropEvent DroppingEvent = new DropEvent(this,10);
     BotEvents BotDroppingEvent = new BotEvents(this,10);
 
     public Tetris getActiveTetris() {
         return activeTetris;
+
     }
     public boolean dropIt = false;
 
@@ -421,8 +425,8 @@ public void tetrisBot(){
         }
         int[] executeArray = new int[3];
         int maxScore = -999999999;
-        for (int h = 0; h < botArray.length; h++) {
 
+        for (int h = 0; h < botArray.length; h++) {
             if (maxScore < botArray[h][0]) {
                 maxScore = botArray[h][0];
                 executeArray[0] = maxScore;

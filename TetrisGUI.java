@@ -120,29 +120,28 @@ public class TetrisGUI extends JPanel
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
+        if(!board.botEnabled) {
+            g2.setColor(Color.DARK_GRAY);
+            g2.fill(scoreRectangle);
+            g2.setColor(Color.white);
+            Font font = new Font("Serif", Font.PLAIN, 50);
+            g2.setFont(font);
+            g2.drawString("Your score is: " + board.highscore.getScore(), 620, 450);
+            g2.drawLine(10, 20, 10, 20);
+            g2.drawString("HighscoreList ", 620, 520);
+            Font font2 = new Font("Serif", Font.PLAIN, 32);
+            g2.setFont(font2);
 
-        g2.setColor(Color.DARK_GRAY);
-        g2.fill(scoreRectangle);
-        g2.setColor(Color.white);
-        Font font = new Font("Serif", Font.PLAIN, 50);
-        g2.setFont(font);
-        g2.drawString("Your score is: " + board.highscore.getScore(), 620, 450);
-        g2.drawLine(10,20,10,20);
-        g2.drawString("HighscoreList ", 620, 520);
-        Font font2 = new Font("Serif", Font.PLAIN, 32);
-        g2.setFont(font2);
-
-        g2.drawString("1. " + board.highscore.getHighscoreByRank(1), 650, 580);
-        g2.drawString("2. " + board.highscore.getHighscoreByRank(2), 650, 630);
-        g2.drawString("3. " + board.highscore.getHighscoreByRank(3), 650, 680);
-        g2.drawString("4. " + board.highscore.getHighscoreByRank(4), 650, 730);
-        g2.drawString("5. " + board.highscore.getHighscoreByRank(5), 650, 780);
-
+            g2.drawString("1. " + board.highscore.getHighscoreByRank(1), 650, 580);
+            g2.drawString("2. " + board.highscore.getHighscoreByRank(2), 650, 630);
+            g2.drawString("3. " + board.highscore.getHighscoreByRank(3), 650, 680);
+            g2.drawString("4. " + board.highscore.getHighscoreByRank(4), 650, 730);
+            g2.drawString("5. " + board.highscore.getHighscoreByRank(5), 650, 780);
+        }
        if (squares == null)
            initSquares();
 
-        if(squaresNextPentomino == null)
-            initNextPentomino();
+
 
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
@@ -150,11 +149,14 @@ public class TetrisGUI extends JPanel
                 squares[j][i].draw(g2);
             }
         }
-
+        if(!board.botEnabled) {
+        if(squaresNextPentomino == null)
+            initNextPentomino();
        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                if(squaresNextPentomino!=null && g2!=null){
+                if(squaresNextPentomino!=null && g2!=null) {
                     squaresNextPentomino[j][i].draw(g2);
+                }
                 }
 
             }
