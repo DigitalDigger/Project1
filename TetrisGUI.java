@@ -21,7 +21,6 @@ public class TetrisGUI extends JPanel
     private Color Rainbow = new Color(182, 7, 107);
     private Color Unicorn = new Color(192, 101, 158);
     private Color Hidden = new Color(12, 101, 158);
-    private int counter=0;
 
     public TetrisGUI(Board inBoard, FuturePentominoBoard fBoard) {
         board = inBoard;
@@ -38,6 +37,7 @@ public class TetrisGUI extends JPanel
     public void paintSquares() {
         if (squares == null)
             initSquares();
+
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 if (board.getBoard().get(new Coordinate(i, j)).getType() == 0)
@@ -80,7 +80,6 @@ public class TetrisGUI extends JPanel
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                //System.out.println("type of X=" + i + "Y=" + j + " -> " + board.futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType());
                  if (board.futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 0)
                     squaresNextPentomino[j][i].bgColor = this.darkOrange;
                  else if (board.futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 1)
@@ -108,7 +107,6 @@ public class TetrisGUI extends JPanel
                 else if (board.futurePentominoBoard.getBoard().get(new Coordinate(i, j)).getType() == 12)
                     squaresNextPentomino[j][i].bgColor = this.Hidden;
 
-
             }
         }
          repaint();
@@ -134,12 +132,12 @@ public class TetrisGUI extends JPanel
         Font font2 = new Font("Serif", Font.PLAIN, 32);
         g2.setFont(font2);
 
-//System.out.println(board.newScore.getScores().get(0).toString().replaceAll("[\\n\\t ]", " "));
         g2.drawString("1. " + board.highscore.getHighscoreByRank(1), 650, 580);
         g2.drawString("2. " + board.highscore.getHighscoreByRank(2), 650, 630);
         g2.drawString("3. " + board.highscore.getHighscoreByRank(3), 650, 680);
         g2.drawString("4. " + board.highscore.getHighscoreByRank(4), 650, 730);
         g2.drawString("5. " + board.highscore.getHighscoreByRank(5), 650, 780);
+
        if (squares == null)
            initSquares();
 
@@ -195,7 +193,7 @@ public class TetrisGUI extends JPanel
             for (int j = 0; j < 5; j++) {
                 double x = j * xInc;
                 Rectangle2D.Double r =
-                        new Rectangle2D.Double(x+650, y+50, xInc, yInc);
+                        new Rectangle2D.Double((x+650), (y+50), xInc, yInc);
                 squaresNextPentomino[i][j] = new SquareRx(r);
             }
         }
@@ -226,17 +224,8 @@ public class TetrisGUI extends JPanel
         }
 
         if (key == KeyEvent.VK_UP) {
-            Tetris rotatedTetris = board.getActiveTetris().Rotate();
-            board.removePentomino(board.getCurrentPosition(), board.getActiveTetris());
-            if (!board.checkCollision(board.getCurrentPosition(), rotatedTetris)) {
-                // board.printBoard();
-                board.fillPentomino(board.getCurrentPosition(), rotatedTetris, 1);
-                board.setActiveTetris(rotatedTetris);
-            } else
-                board.fillPentomino(board.getCurrentPosition(), board.getActiveTetris(), 1);
-
+            board.rotateActiveTetris();
         }
-
         if (key == KeyEvent.VK_DOWN) {
             board.setCurrentPosition(board.moveDown(board.getCurrentPosition(), board.getActiveTetris(), false));
         }

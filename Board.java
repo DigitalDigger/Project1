@@ -24,8 +24,15 @@ public class Board extends Highscore {
     public boolean gameOver=false;
     public Highscore highscore = new Highscore();
     public FuturePentominoBoard futurePentominoBoard = new FuturePentominoBoard(5,5);
+    private String name="";
+
+    public boolean boardToCurrentPosition=false;
+    public boolean botEnabled = true;
+    public boolean botDropIt = false;
+    public int[][] botArray = new int[20][3];
     FallingTimer FallingEvent = new FallingTimer(this, 2000);
     DropEvent DroppingEvent = new DropEvent(this,10);
+    BotEvents BotDroppingEvent = new BotEvents(this,10);
 
     public Tetris getActiveTetris() {
         return activeTetris;
@@ -70,6 +77,8 @@ public class Board extends Highscore {
             }
         }
     }
+
+
 
 
     public boolean checkCollision(Coordinate cell, Tetris curTetris) {
@@ -164,17 +173,27 @@ public class Board extends Highscore {
         }
         System.out.println();
     }
-    public void printFuturePentomino() {
-        String futurePentominoArray = futureTetris.toString();
-        System.out.println(futurePentominoArray);
-        //Method to print the pentominoes
+    public int[][] boardToArray() {
+        int[][] boardArray = new int[getHeight()][getWidth()];
+        for (int b = 0; b < getWidth(); b++) {
+        for (int a = 0; a < getHeight(); a++) {
+
+                boardArray[a][b]=board.get(new Coordinate(b, a)).getMatrixValue();
+            }
+
+        }
+        return boardArray;
+    }
+    public int[][] boardToArrayreverse() {
+        int[][] boardArray = new int[getWidth()][getHeight()];
+
         for (int a = 0; a < getHeight(); a++) {
             for (int b = 0; b < getWidth(); b++) {
-                //System.out.print(futurePentominoBoard.get(new Coordinate(b, a)).getMatrixValue() + "  ");
+                boardArray[b][a]=board.get(new Coordinate(b, a)).getMatrixValue();
             }
-            System.out.println();
+
         }
-        System.out.println();
+        return boardArray;
     }
 
     public void  fillPentomino(Coordinate cell, Tetris curTetris, int toAdd) {
@@ -246,7 +265,6 @@ public class Board extends Highscore {
         if (checkCollision(curCoord, curPento)) {
             removePentomino(curCoord, curPento);
             curCoord.setY(curCoord.getY() + 1);
-            //printBoard();
             if (checkCollision(curCoord, curPento)){
                 curCoord.setY(curCoord.getY() - 1);
                 fillPentomino(curCoord, curPento, 1);
@@ -261,6 +279,34 @@ public class Board extends Highscore {
             return new Coordinate(curCoord.getX(), curCoord.getY());
 
     }
+    public Coordinate moveUp(Coordinate curCoord, Tetris curPento, boolean spacePressed) {
+
+        if (checkCollision(curCoord, curPento)) {
+            removePentomino(curCoord, curPento);
+            curCoord.setY(curCoord.getY() - 1);
+            if (checkCollision(curCoord, curPento)){
+                curCoord.setY(curCoord.getY() + 1);
+                fillPentomino(curCoord, curPento, 1);
+            }
+            else{
+                fillPentomino(curCoord, curPento, 1);
+            }
+        }
+
+        return new Coordinate(curCoord.getX(), curCoord.getY());
+
+    }
+    public void botDropDown(){
+        Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
+
+        while (previousPosition.getY() != currentPosition.getY()) {
+            previousPosition = currentPosition.clone();
+            currentPosition = moveDown(getCurrentPosition(), getActiveTetris(),true);
+        }
+        System.out.println("dropped");
+        printBoard();
+    }
+
     public void dropDown(){
         Coordinate currentPosition = getCurrentPosition().clone();
         Coordinate previousPosition = new Coordinate(currentPosition.getX(), currentPosition.getY() - 1);
@@ -272,36 +318,44 @@ public class Board extends Highscore {
         checkAndRemoveFullLine();
         generateTetris();
         checkGameOver();
+        if(botEnabled)
+           tetrisBot();
         // board.printBoard();
     }
     public void checkGameOver() {
         if (gameOver) {
-            System.out.println("game over");
             FallingEvent.cancel();
             DroppingEvent.cancel();
-
+            BotDroppingEvent.cancel();
             gameOverFrame = new JFrame("Game Over!");
             gameOverFrame.setLocationRelativeTo(null);
             gameOverFrame.setResizable(false);
-            JPanel gameOverPanel = new JPanel(new FlowLayout());
-            nameGetter = new JTextField(12);
-            JButton gameOverButton = new JButton("Submit");
-            GameOverListener listener = new GameOverListener();
-            gameOverButton.addActionListener(listener);
-            gameOverPanel.add(nameGetter);
-            gameOverPanel.add(gameOverButton);
-            gameOverFrame.add(gameOverPanel);
-            gameOverFrame.pack();
-            gameOverFrame.setVisible(true);
+
+                JPanel gameOverPanel = new JPanel(new FlowLayout());
+                nameGetter = new JTextField(12);
+                JButton gameOverButton = new JButton("Submit");
+                GameOverListener listener = new GameOverListener();
+                gameOverButton.addActionListener(listener);
+                gameOverPanel.add(nameGetter);
+                gameOverPanel.add(gameOverButton);
+                gameOverFrame.add(gameOverPanel);
+                gameOverFrame.pack();
+                gameOverFrame.setVisible(true);
+
+
 
         }
     }
 
     class GameOverListener implements ActionListener {
-        public void actionPerformed(ActionEvent e){
-            String name = nameGetter.getText();
-            int score = highscore.getScore();
+        public void actionPerformed(ActionEvent e) {
+
             gameOverFrame.dispose();
+            if(botEnabled)
+                name="bot";
+            else
+            name = nameGetter.getText();
+            int score = highscore.getScore();
             Highscore newScore = new Highscore(score, name);
             newScore.read();
             newScore.add(newScore);
@@ -325,35 +379,176 @@ public class Board extends Highscore {
             else{
                 JOptionPane.showMessageDialog(null, "No new Highscore :( Your score is: " + highscore.getScore(), "Game Over", JOptionPane.WARNING_MESSAGE);
             }
-
-
             System.exit(0);
+         }
         }
+public void tetrisBot(){
+    if(!gameOver) {
+        printBoard();
+        int counter = 0;
+        for (int i = 0; i < getWidth(); i++) {
+            for (int k = 0; k < 4; k++) {
+                botDropIt = true;
+
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int[][] arrayBoard = boardToArray();
+
+                botArray[counter][0] = calculatePositionScore(arrayBoard);
+                botArray[counter][1] = i;
+                botArray[counter][2] = k;
+
+                boardToCurrentPosition = true;
+
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                rotateActiveTetris();
+                counter++;
+            }
+            moveActiveTetrisToRight();
+
         }
+
+        for (int z = 0; z < getWidth(); z++) {
+            moveActiveTetrisToLeft();
+        }
+        int[] executeArray = new int[3];
+        int maxScore = -999999999;
+        for (int h = 0; h < botArray.length; h++) {
+
+            if (maxScore < botArray[h][0]) {
+                maxScore = botArray[h][0];
+                executeArray[0] = maxScore;
+                executeArray[1] = botArray[h][1];
+                executeArray[2] = botArray[h][2];
+            }
+
+        }
+        System.out.println("let's start the bot");
+
+        for (int v = 0; v < executeArray[1]; v++) {
+            moveActiveTetrisToRight();
+        }
+
+        for (int c = 0; c < executeArray[2]; c++) {
+            rotateActiveTetris();
+        }
+
+        dropDown();
+    }
+}
+
+/*****************************************/
+/*** BOT SCORE CALCULATION COMES HERE ***/
+/***************************************/
+public int getHeightScore(int[][] bArray) {
+
+    int height = 0;
+    for (int j = 0; j < bArray[0].length; j++)       {
+        for(int i = 0; i < bArray.length; i++)       {
+            if(bArray[i][j] != 0)    {
+                height += (bArray.length - i);
+            }
+        }
+    }
+    return height;
+}
+
+    public int getHolesScore(int[][] bArray) {
+
+        int holes = 0;
+        for(int i = bArray.length - 1; i > 0 ; i--)      {
+            for (int j = 0; j < bArray[0].length; j++)   {
+                if(bArray[i][j] == 0 && bArray[i-1][j] != 0)      {
+
+                    holes++;
+                }
+            }
+        }
+
+
+        return holes;
+    }
+
+    public int getFullRowsScore(int[][] bArray){
+        int a;
+        int bRows = 0;
+        for(int i = 0;i<bArray.length;i++){
+            a=0;
+            for(int j = 0;j<bArray[0].length;j++){
+                if(bArray[i][j] != 0){
+                    a++;
+                }
+            }
+            if(a==bArray[0].length){
+                bRows++;
+            }
+        }
+        return bRows;
+    }
+
+    public int getMonotoneScore(int[][] bArray) {
+        int a=0;
+        int sum=0;
+        int counter = 0;
+        int[]array = new int[bArray[0].length+1];
+        for (int i = 0; i < bArray[0].length; i++) {
+            for (int j = 0; j < bArray.length; j++) {
+                if (bArray[j][i] != 0) {
+                    counter=bArray.length-j;
+                    a++;
+                    array[a]=counter;
+                    counter=0;
+                    break;
+
+                }
+
+            }
+        }
+
+
+        for(int k=0; k<array.length-1;k++) {
+            sum += Math.abs(array[k] - array[k + 1]);
+        }
+
+        return sum;
+    }
+
+    public int calculatePositionScore(int[][] bArray) {
+        int height= getHeightScore(bArray);
+        int holes = getHolesScore(bArray);
+        int fullrows = getFullRowsScore(bArray);
+        int monotone = getMonotoneScore(bArray);
+
+        int w1 = -26;   //height
+        int w2 = -86;   //holes
+        int w3 = 60;    //rows
+        int w4 = -20;    //montone
+
+
+
+        int sum = height*w1 + holes*w2  + fullrows*w3 + monotone*w4;
+
+        return sum;
+    }
 
     public void generateTetris() {
         Coordinate firstPosition = new Coordinate((getWidth() / 2), 0);
+
+        if(botEnabled){
+            firstPosition = new Coordinate(0, 0);
+        }
+
         currentPosition = firstPosition;
         Coordinate futurePentominoPosition = new Coordinate((getWidth() / 2), 0);
         currentFuturePosition = futurePentominoPosition;
-        System.out.println("INITIAL POSITION   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
-
-            /*
-        while (futurePentominoPosition.getX() != 0) {
-            futurePentominoPosition.pushLeft();
-            System.out.println("TO THE LEFT   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
-            currentFuturePosition = futurePentominoPosition;
-
-        }
-
-        while (futurePentominoPosition.getX() != getWidth()) {
-            futurePentominoPosition.pushRight();
-            System.out.println("TO THE RIGHT   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
-            currentFuturePosition = futurePentominoPosition;
-
-        }
-        */
-        System.out.println("FINAL   X: " + futurePentominoPosition.getX() + "  " + "Y: " + futurePentominoPosition.getY());
         if (pentoCheck == 0) {
             Tetris aTetris = generatePentomino(pentominos);
             Tetris fTetris = generatePentomino(pentominos);
@@ -366,7 +561,6 @@ public class Board extends Highscore {
             Tetris fTetris = generatePentomino(pentominos);
             futureTetris = fTetris;
             futurePentominoBoard.setZeros();
-            //futurePentominoBoard.removePentomino(futurePentominoPosition,activeTetris);
         }
         if(futureTetris.getType()==1){
             futurePentominoPosition.pushLeft();
@@ -381,30 +575,21 @@ public class Board extends Highscore {
         if(futureTetris.getType()==10){
             futurePentominoPosition.pushLeft();
         }
+        if(botEnabled);
+
+
         futurePentominoBoard.fillPentomino(futurePentominoPosition, futureTetris, 1);
 
-
-
-
-        //while (true) {
-        //Tetris tetris = generatePentomino(pentominos);
-
-
-       // futurePentominoBoard.removePentomino(firstPosition,activeTetris);
-        futurePentominoBoard.printBoard();
-        //futureTetris = tetris;
-        //printFuturePentomino();
-        if (!checkCollision(firstPosition, activeTetris)) {
-            fillPentomino(firstPosition, activeTetris, 1);
+        if (!checkCollision(currentPosition, activeTetris)) {
+            fillPentomino(currentPosition, activeTetris, 1);
             return;
         }
-
 
         while (firstPosition.getX() != 0) {
             firstPosition.pushLeft();
             currentPosition = firstPosition;
-            if (!checkCollision(firstPosition, activeTetris)) {
-                fillPentomino(firstPosition, activeTetris, 1);
+            if (!checkCollision(currentPosition, activeTetris)) {
+                fillPentomino(currentPosition, activeTetris, 1);
                 return;
             }
         }
@@ -412,18 +597,64 @@ public class Board extends Highscore {
         while (firstPosition.getX() != getWidth()) {
             firstPosition.pushRight();
             currentPosition = firstPosition;
-            if (!checkCollision(firstPosition, activeTetris)) {
-                fillPentomino(firstPosition, activeTetris, 1);
+            if (!checkCollision(currentPosition, activeTetris)) {
+                fillPentomino(currentPosition, activeTetris, 1);
                 return;
             }
         }
-        if(checkCollision(firstPosition, activeTetris)) {
+
+
+
+        if(checkCollision(currentPosition, activeTetris)) {
             System.out.println("Game Over");
             gameOver = true;
+        }
+
+    }
+    public void rotateActiveTetris(){
+        Tetris rotatedTetris = getActiveTetris().Rotate();
+        removePentomino(getCurrentPosition(), getActiveTetris());
+        if (!checkCollision(getCurrentPosition(), rotatedTetris)) {
+            // board.printBoard();
+            fillPentomino(getCurrentPosition(), rotatedTetris, 1);
+            setActiveTetris(rotatedTetris);
+        } else
+            fillPentomino(getCurrentPosition(), getActiveTetris(), 1);
+
+        System.out.println("rotated");
+        printBoard();
+
+    }
+    public void moveActiveTetrisToRight() {
+        setCurrentPosition(moveRight(getCurrentPosition(), getActiveTetris()));
+
+        System.out.println("moved to the right");
+        printBoard();
+    }
+    public void moveActiveTetrisToLeft() {
+        setCurrentPosition(moveLeft(getCurrentPosition(), getActiveTetris()));
+
+        System.out.println("moved to the right");
+        printBoard();
+    }
+    public Coordinate moveActiveTetrisDown(Coordinate curCoord, Tetris curPento, boolean spacePressed) {
+
+        if (checkCollision(curCoord, curPento)) {
+            removePentomino(curCoord, curPento);
+            curCoord.setY(curCoord.getY() + 1);
+            if (checkCollision(curCoord, curPento)){
+                curCoord.setY(curCoord.getY() - 1);
+                fillPentomino(curCoord, curPento, 1);
+            }
+            else{
+                fillPentomino(curCoord, curPento, 1);
+            }
 
         }
-        // }
+        return new Coordinate(curCoord.getX(), curCoord.getY());
+
     }
+
 
     public static void main(String[] args) throws Exception {
 
@@ -520,14 +751,15 @@ public class Board extends Highscore {
         JFrame j = new JFrame();
         //j.setResizable(false);
         j.add(grid);
-
         j.setSize(board.getWidth() * 120 + 400, board.getHeight() * 80);
         j.setVisible(true);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         board.highscore.init();
         board.generateTetris();
-        Coordinate zero = new Coordinate(0, 0);
+        if(board.botEnabled)
+            board.tetrisBot();
+
 
         while(true)
         {
@@ -535,9 +767,12 @@ public class Board extends Highscore {
             long starttime = System.currentTimeMillis();
             while(System.currentTimeMillis()-starttime < 50) {
             }
+
             grid.paintSquares();
-            grid.paintFuturePentomino();
+            //grid.paintFuturePentomino();
+
         }
+
     }
 
 

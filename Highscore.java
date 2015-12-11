@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 
-public class Highscore implements Serializable {
+public class Highscore {
     private int score;
     private String name;
     private ArrayList<Highscore> scores = new ArrayList<Highscore>();

@@ -5,7 +5,7 @@ import java.util.*;
 public class FallingTimer extends TimerTask {
     Timer timer;
     public int seconds;
-    public Board board;
+    private Board board;
 
     public FallingTimer(Board board, int seconds) {
         this.seconds = seconds;
@@ -16,7 +16,7 @@ public class FallingTimer extends TimerTask {
 
     public void run() {
         FallingTimer timer2;
-        if(!board.dropIt && !board.gameOver)
+        if(!board.dropIt && !board.gameOver && !board.botEnabled)
         board.moveDown(board.getCurrentPosition(), board.getActiveTetris(), false);
 
 
